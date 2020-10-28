@@ -10,16 +10,15 @@ def abs():
     return sim.Material("abs",0.35,1000)
 
 #create the simulation
-
-motor_system = sim.System("test")
-
-
-arm1 = sim.Motor_arm(motor_system.system,False,pla(),0.025,0.0125,(0,0,0),(0,0,1),0.0005,10) #create arm in simulation
-arm2 = sim.Motor_arm(motor_system.system,False,pla(),0.025,0.0125,(0,0,1),(0,0,1.5),0.0005,10,origin=False,stator_constraint=arm1.arm_tip)#create attached second arm
+#note everything is in meters, kg, metric units
 
 headless = False
 maxtime=0.2
 timestep = 0.005
+
+motor_system = sim.System("test")
+arm1 = sim.Motor_arm(motor_system.system,False,pla(),0.025,0.0125,(0,0,0),(0,0,1),0.0005,10) #create arm in simulation
+arm2 = sim.Motor_arm(motor_system.system,False,pla(),0.025,0.0125,(0,0,1),(0,0,1.5),0.0005,10,origin=False,stator_constraint=arm1.arm_tip)#create attached second arm
 
 if not headless:
     motor_system.window(arm1,arm2,timestep,headless=headless,print_time=True) #create window to view system
