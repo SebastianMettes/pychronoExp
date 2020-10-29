@@ -1,5 +1,5 @@
 import multi_arm_assembler_3 as sim
-
+import time
 
 #Setup the materials
 def steel():
@@ -12,8 +12,8 @@ def abs():
 #create the simulation
 #note everything is in meters, kg, metric units
 
-headless = False
-maxtime=0.2
+headless = True
+maxtime=10
 timestep = 0.005
 
 motor_system = sim.System("test")
@@ -23,26 +23,33 @@ arm2 = sim.Motor_arm(motor_system.system,False,pla(),0.025,0.0125,(0,0,1),(0,0,1
 if not headless:
     motor_system.window(arm1,arm2,timestep,headless=headless,print_time=True) #create window to view system
 
+s1 = time.perf_counter()
 while(motor_system.system.GetChTime()<maxtime):
     if not headless:
         motor_system.window.BeginScene()
         motor_system.window.DrawAll()
-        m1t = input("enter arm1 torque: ")
-        m2t = input("enter arm2 torque: ")
+        #m1t = input("enter arm1 torque: ")
+        #m2t =input("enter arm2 torque: ")
+        m1t = 1
+        m2t = -1
         arm1.set_torque(float(m1t))
         arm2.set_torque(float(m2t))
         motor_system.do_sim_step(timestep)    
         motor_system.window.EndScene()
         print(arm1.arm_tip.GetPos())
         print(motor_system.system.GetChTime())
+        print(time.perf_counter()-s1)
     else:
         #motor_system.window.BeginScene()
         #motor_system.window.DrawAll()
-        m1t = input("enter arm1 torque: ")
-        m2t = input("enter arm2 torque: ")
+        #m1t = input("enter arm1 torque: ")
+        #m2t = input("enter arm2 torque: ")
+        m1t = 1
+        m2t = -1
         arm1.set_torque(float(m1t))
         arm2.set_torque(float(m2t))
         motor_system.do_sim_step(timestep)    
         #motor_system.window.EndScene()
         print(arm1.arm_tip.GetPos())   
         print(motor_system.system.GetChTime())     
+        print(time.perf_counter()-s1)

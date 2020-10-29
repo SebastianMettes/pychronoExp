@@ -28,7 +28,10 @@ class System():
     def __init__(self,name):
         self.system = chrono.ChSystemNSC()
         self.name = name
-        self.system.SetSolver(mkl.ChSolverMKL())
+        solver = chrono.ChSolverSparseQR()
+        #solver = mkl.ChSolverMKL()
+        self.system.SetSolver(solver)
+
 
 
     
