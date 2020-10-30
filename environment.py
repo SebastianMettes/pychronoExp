@@ -12,12 +12,12 @@ def abs():
 #create the simulation
 #note everything is in meters, kg, metric units
 
-headless = True
-maxtime=10
+headless = False
+maxtime=4
 timestep = 0.005
 
 motor_system = sim.System("test")
-arm1 = sim.Motor_arm(motor_system.system,False,pla(),0.025,0.0125,(0,0,0),(0,0,1),0.0005,10) #create arm in simulation
+arm1 = sim.Motor_arm(motor_system.system,False,steel(),0.025,0.0125,(0,0,0),(0,0,1),0.0005,10) #create arm in simulation
 arm2 = sim.Motor_arm(motor_system.system,False,pla(),0.025,0.0125,(0,0,1),(0,0,1.5),0.0005,10,origin=False,stator_constraint=arm1.arm_tip)#create attached second arm
 
 if not headless:
@@ -28,10 +28,10 @@ while(motor_system.system.GetChTime()<maxtime):
     if not headless:
         motor_system.window.BeginScene()
         motor_system.window.DrawAll()
-        #m1t = input("enter arm1 torque: ")
-        #m2t =input("enter arm2 torque: ")
-        m1t = 1
-        m2t = -1
+        m1t = input("enter arm1 torque: ")
+        m2t =input("enter arm2 torque: ")
+        #m1t = 1
+        #m2t = -1
         arm1.set_torque(float(m1t))
         arm2.set_torque(float(m2t))
         motor_system.do_sim_step(timestep)    
