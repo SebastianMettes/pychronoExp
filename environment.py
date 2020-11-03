@@ -69,8 +69,8 @@ while(motor_system.system.GetChTime()<maxtime):
         savefile2.append(arm2PosList)
         savefile1.append(arm1PosList)
 
-np.save(testrun+"filetip2.txt",np.array(savefile2))
-np.save(testrun+'filetip1.txt',np.array(savefile1))
+np.savetxt(testrun+"filetip2.txt",np.array(savefile2))
+np.savetxt(testrun+'filetip1.txt',np.array(savefile1))
 #print(arm2.arm_tip.GetPos())
 #print(motor_system.system.GetChTime()) 
 print(time.perf_counter()-s1)
