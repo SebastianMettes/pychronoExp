@@ -48,3 +48,27 @@ SpareLU:
 [ 0.153992, -0.000160685, -0.997512 ]
 10.000000000000163
 902.09434328638455
+
+
+headless = False
+maxtime=10
+timestep = 0.005
+
+motor_system = sim.System("test")
+arm1 = sim.Motor_arm(motor_system.system,False,pla(),0.025,0.0125,(0,0,0),(0,0,1),0.0005,10) #create arm in simulation
+arm2 = sim.Motor_arm(motor_system.system,False,pla(),0.025,0.0125,(0,0,1),(0,0,1.5),0.0005,10,origin=False,stator_constraint=arm1.arm_tip)#create attached second arm
+
+Laptop:
+SpareQR:
+[ 0.153992, -0.000160685, -0.997512 ]
+10.000000000000163
+37.765618163
+
+SparseLU:
+[ 0.153992, -0.000160685, -0.997512 ]
+10.000000000000163
+35.287734711999974
+
+Desktop:
+
+
