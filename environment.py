@@ -10,14 +10,14 @@ def pla():
 def abs():
     return sim.Material("abs",0.35,1000)
 
-testrun = "0.005"
+testrun = "0.001"
 #create the simulation
 #note everything is in meters, kg, metric units
 savefile1 = []
 savefile2 = []
 headless = True
 maxtime=5
-timestep = 0.01
+timestep = 0.001
 
 motor_system = sim.System("test")
 arm1 = sim.Motor_arm(motor_system.system,False,steel(),0.025,0.0125,(0,0,0),(0,0,1),0.000,10) #create arm in simulation
