@@ -17,11 +17,11 @@ savefile1 = []
 savefile2 = []
 headless = True
 maxtime=5
-timestep = 0.005
+timestep = 0.01
 
 motor_system = sim.System("test")
-arm1 = sim.Motor_arm(motor_system.system,False,pla(),0.025,0.0125,(0,0,0),(0,0,1),0.000,10) #create arm in simulation
-arm2 = sim.Motor_arm(motor_system.system,False,pla(),0.025,0.0125,(0,0,1),(0,0,1.5),0.000,10,origin=False,stator_constraint=arm1.arm_tip)#create attached second arm
+arm1 = sim.Motor_arm(motor_system.system,False,steel(),0.025,0.0125,(0,0,0),(0,0,1),0.000,10) #create arm in simulation
+arm2 = sim.Motor_arm(motor_system.system,False,steel(),0.025,0.0125,(0,0,1),(0,0,1.5),0.000,10,origin=False,stator_constraint=arm1.arm_tip)#create attached second arm
 
 if not headless:
     motor_system.window(arm1,arm2,timestep,headless=headless,print_time=True) #create window to view system
@@ -69,8 +69,8 @@ while(motor_system.system.GetChTime()<maxtime):
         savefile2.append(arm2PosList)
         savefile1.append(arm1PosList)
 
-np.savetxt(testrun+"filetip2.txt",np.array(savefile2))
-np.savetxt(testrun+'filetip1.txt',np.array(savefile1))
+np.savetxt("steel"+testrun+"filetip2.txt",np.array(savefile2))
+np.savetxt("steel"+testrun+'filetip1.txt',np.array(savefile1))
 #print(arm2.arm_tip.GetPos())
 #print(motor_system.system.GetChTime()) 
 print(time.perf_counter()-s1)
