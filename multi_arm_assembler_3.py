@@ -5,11 +5,7 @@ import pychrono.irrlicht as chronoirr
 import time
 import random
 
-chrono.SetChronoDataPath('/home/sebastian/miniconda3/pkgs/pychrono-5.0.0-py37_9/share/chrono/data/')
-writepath = ('/home/sebastian/code/project_name/')
-
-
-
+chrono.SetChronoDataPath('/home/sebastian/miniconda3/pkgs/pychrono-5.0.0-py37_9/share/chrono/data/') 
 
 
 class Material():
@@ -22,17 +18,12 @@ class Material():
 
 
 
-#def steel_func(): #how to use the Material class
-#    return Material("Mat1",11,12,13)
 class System():
     def __init__(self,name):
         self.system = chrono.ChSystemNSC()
         self.name = name
         solver = chrono.ChSolverSparseLU()
-        #solver = mkl.ChSolverMKL()
         self.system.SetSolver(solver)
-
-
 
     
     def window(self,arm1,arm2,timestep,print_time = False,headless=True,):
