@@ -9,5 +9,7 @@ Currently environment.py and multi_arm_assembler_3.py do function and can be tes
 gym-multiarm will contain the openAI gym environment (when complete)
 
 Useful information:
+
 -PyChrono module: conda install -c projectchrono pychrono
+
 -run in a python 3.7.x virtual environment
