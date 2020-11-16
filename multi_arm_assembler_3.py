@@ -44,6 +44,7 @@ class System():
 
 class Motor_arm():
     def __init__(self,sys,gravity,material,width,height,position_base,position_tip,damping,elements,torque=10,origin=True,stator_constraint = None):
+        self.material = material
         self.mesh = fea.ChMesh()
         self.mesh.SetAutomaticGravity(gravity)
 

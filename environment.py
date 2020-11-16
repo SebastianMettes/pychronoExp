@@ -13,14 +13,14 @@ def abs():
 
 #note everything is in meters, kg, metric units
 
-testrun = "0.005" #Name of Savefile
+
 
 savefile1 = [] #empty list to append position data to (arm 1)
 savefile2 = [] #empty list to append position data to (arm 2)
 headless = True #Are you running a monitor and want to visual the simulation? Note, this adds significant calculation time
 maxtime=3 #How many seconds in simulation do you want to simulate?
-timestep = 0.0001 #Timestep size in simulation, seconds
-
+timestep = 0.01 #Timestep size in simulation, seconds
+stepname = str(timestep)
 motor_system = sim.System("test") #Create the system
 arm1 = sim.Motor_arm(motor_system.system,False,pla(),0.025,0.0125,(0,0,0),(0,0,1),0.000,10) #create arm in simulation
 arm2 = sim.Motor_arm(motor_system.system,False,pla(),0.025,0.0125,(0,0,1),(0,0,1.5),0.000,10,origin=False,stator_constraint=arm1.arm_tip)#create attached second arm
@@ -29,6 +29,9 @@ if not headless:
     motor_system.window(arm1,arm2,timestep,headless=headless,print_time=True) #create window to view system if not headless
 
 s1 = time.perf_counter() #track how long simulation takes to run
+step = 0 #step counter
+m1t = 0
+m2t = 0 #initial setting prior to ramping
 while(motor_system.system.GetChTime()<maxtime):
     if not headless:
         motor_system.window.BeginScene() 
@@ -51,10 +54,12 @@ while(motor_system.system.GetChTime()<maxtime):
         savefile2.append(arm2PosList) #Append to textfile
         savefile1.append(arm1PosList)
         #print(time.perf_counter()-s1)
-    else:
+    else: #if headless
+        if m1t < 1:
+            m1t = m1t+timestep
+        if m2t >-1:
+            m2t = m2t-timestep
 
-        m1t = 1
-        m2t = -1
         #m1t = random.randrange(-10,11,1)*1.5
         #m2t = random.randrange(-10,11,1)*0.25
         arm1.set_torque(float(m1t))
@@ -71,8 +76,8 @@ while(motor_system.system.GetChTime()<maxtime):
         savefile2.append(arm2PosList)
         savefile1.append(arm1PosList)
 
-np.savetxt("steel"+testrun+"filetip2.txt",np.array(savefile2))
-np.savetxt("steel"+testrun+'filetip1.txt',np.array(savefile1))
+np.savetxt(stepname+arm2.material.name+"tip2position.txt",np.array(savefile2))
+#np.savetxt("steel"+testrun+'filetip1.txt',np.array(savefile1))
 #print(arm2.arm_tip.GetPos())
 #print(motor_system.system.GetChTime()) 
 print(time.perf_counter()-s1)
