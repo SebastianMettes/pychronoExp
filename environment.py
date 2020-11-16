@@ -60,9 +60,9 @@ while(motor_system.system.GetChTime()<maxtime):
     #is ramped?
     #   
         if ramped == True:  
-            if m1t < 0.5:
+            if m1t < 2:
                 m1t = m1t+timestep
-            if m2t >-0.5:
+            if m2t >-2:
                 m2t = m2t-timestep
         else:
             m1t = 1
@@ -83,7 +83,7 @@ while(motor_system.system.GetChTime()<maxtime):
         savefile2.append(arm2PosList)
         savefile1.append(arm1PosList)
 
-np.savetxt(stepname+arm2.material.name+"0.5N-tip2position.txt",np.array(savefile2))
+np.savetxt(stepname+arm2.material.name+"2N-tip2position.txt",np.array(savefile2))
 #np.savetxt("steel"+testrun+'filetip1.txt',np.array(savefile1))
 #print(arm2.arm_tip.GetPos())
 #print(motor_system.system.GetChTime()) 
