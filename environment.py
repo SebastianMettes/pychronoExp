@@ -8,7 +8,7 @@ def steel():
 def pla():
     return sim.Material("pla",3E9,0.3,1000)
 def abs():
-    return sim.Material("abs",0.35,1000)
+    return sim.Material("abs",3E9,0.35,1000)
 
 
 #note everything is in meters, kg, N, metric units
