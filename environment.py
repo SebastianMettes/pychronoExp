@@ -14,10 +14,11 @@ def abs():
 #note everything is in meters, kg, N, metric units
 
 #Stuff you should modify:
+saveoutput = False
 headless = False #Are you running a monitor and want to visual the simulation? Note, this adds significant calculation time
 ramped = False
 maxtime=3 #How many seconds in simulation do you want to simulate?
-timestep = 0.01 #Timestep size in simulation, seconds
+timestep = 0.05 #Timestep size in simulation, seconds
 motor_system = sim.System("test") #Create the system
 arm1 = sim.Motor_arm(motor_system.system,False,pla(),0.025,0.0125,(0,0,0),(0,0,1),0.000,10) #create arm in simulation
 arm2 = sim.Motor_arm(motor_system.system,False,pla(),0.025,0.0125,(0,0,1),(0,0,1.5),0.000,10,origin=False,stator_constraint=arm1.arm_tip)#create attached second arm
@@ -54,15 +55,17 @@ while(motor_system.system.GetChTime()<maxtime):
         motor_system.do_sim_step(timestep)    
         motor_system.window.EndScene()
         #print(arm1.arm_tip.GetPos())
-        print(motor_system.system.GetChTime())
-        arm2Pos = arm2.arm_tip.GetPos() #Pull position data
-        arm1Pos = arm1.arm_tip.GetPos()
-        #import pdb; pdb.set_trace()
-        arm2PosList = [arm2Pos.x,arm2Pos.z] #Put into correct format
-        arm1PosList = [arm1Pos.x,arm1Pos.z]        
-        savefile2.append(arm2PosList) #Append to textfile
-        savefile1.append(arm1PosList)
-        #print(time.perf_counter()-s1)
+        #print(motor_system.system.GetChTime())
+        if saveoutput == True:
+            arm2Pos = arm2.arm_tip.GetPos() #Pull position data
+            arm1Pos = arm1.arm_tip.GetPos()
+            #import pdb; pdb.set_trace()
+            arm2PosList = [arm2Pos.x,arm2Pos.z] #Put into correct format
+            arm1PosList = [arm1Pos.x,arm1Pos.z]        
+            savefile2.append(arm2PosList) #Append to textfile
+            savefile1.append(arm1PosList)
+            np.savetxt(stepname+arm2.material.name+"0.5N-tip2position.txt",np.array(savefile2))
+            #print(time.perf_counter()-s1)
     else: #if headless
 
     #is ramped?
@@ -81,17 +84,19 @@ while(motor_system.system.GetChTime()<maxtime):
         arm2.set_torque(float(m2t))
         motor_system.do_sim_step(timestep)    
         #print(arm1.arm_tip.GetPos())   
-        print(motor_system.system.GetChTime())     
+        #print(motor_system.system.GetChTime())     
         #print(time.perf_counter()-s1)
-        arm2Pos = arm2.arm_tip.GetPos()
-        arm1Pos = arm1.arm_tip.GetPos()
-        #import pdb; pdb.set_trace()
-        arm2PosList = [arm2Pos.x,arm2Pos.z]
-        arm1PosList = [arm1Pos.x,arm1Pos.z]        
-        savefile2.append(arm2PosList)
-        savefile1.append(arm1PosList)
+        if saveoutput == True:
+            arm2Pos = arm2.arm_tip.GetPos()
+            arm1Pos = arm1.arm_tip.GetPos()
+            #import pdb; pdb.set_trace()
+            arm2PosList = [arm2Pos.x,arm2Pos.z]
+            arm1PosList = [arm1Pos.x,arm1Pos.z]        
+            savefile2.append(arm2PosList)
+            savefile1.append(arm1PosList)
+            np.savetxt(stepname+arm2.material.name+"0.5N-tip2position.txt",np.array(savefile2))
 
-np.savetxt(stepname+arm2.material.name+"0.5N-tip2position.txt",np.array(savefile2))
+
 #np.savetxt("steel"+testrun+'filetip1.txt',np.array(savefile1))
 #print(arm2.arm_tip.GetPos())
 #print(motor_system.system.GetChTime()) 
