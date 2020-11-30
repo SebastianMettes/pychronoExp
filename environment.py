@@ -8,14 +8,14 @@ def steel():
 def pla():
     return sim.Material("pla",3E9,0.3,1000)
 def abs():
-    return sim.Material("abs",3E9,0.35,1000)
+    return sim.Material("abs",0.35,1000)
 
 
 #note everything is in meters, kg, N, metric units
 
 #Stuff you should modify:
-headless = True #Are you running a monitor and want to visual the simulation? Note, this adds significant calculation time
-ramped = True
+headless = False #Are you running a monitor and want to visual the simulation? Note, this adds significant calculation time
+ramped = False
 maxtime=3 #How many seconds in simulation do you want to simulate?
 timestep = 0.01 #Timestep size in simulation, seconds
 motor_system = sim.System("test") #Create the system
@@ -35,6 +35,14 @@ m1t = 0
 m2t = 0 #initial setting prior to ramping
 while(motor_system.system.GetChTime()<maxtime):
     if not headless:
+        if ramped == True:  
+            if m1t < 0.5:
+                m1t = m1t+timestep
+            if m2t >-0.5:
+                m2t = m2t-timestep
+        else:
+            m1t = 1
+            m2t = -1
         motor_system.window.BeginScene() 
         motor_system.window.DrawAll()
         m1t = 1 #set torque to motor
@@ -60,9 +68,9 @@ while(motor_system.system.GetChTime()<maxtime):
     #is ramped?
     #   
         if ramped == True:  
-            if m1t < 2:
+            if m1t < 0.5:
                 m1t = m1t+timestep
-            if m2t >-2:
+            if m2t >-0.5:
                 m2t = m2t-timestep
         else:
             m1t = 1
@@ -83,7 +91,7 @@ while(motor_system.system.GetChTime()<maxtime):
         savefile2.append(arm2PosList)
         savefile1.append(arm1PosList)
 
-np.savetxt(stepname+arm2.material.name+"2N-tip2position.txt",np.array(savefile2))
+np.savetxt(stepname+arm2.material.name+"0.5N-tip2position.txt",np.array(savefile2))
 #np.savetxt("steel"+testrun+'filetip1.txt',np.array(savefile1))
 #print(arm2.arm_tip.GetPos())
 #print(motor_system.system.GetChTime()) 
