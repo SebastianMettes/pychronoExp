@@ -6,10 +6,9 @@ import pychrono.irrlicht as chronoirr
 import time
 import random
 import numpy as np
-from packages import multi_arm_assembler_3
 from gym import error, spaces, utils
 from gym.utils import seeding
-
+from packages import multi_arm_assembler_3
 
 class Multi_armMaterial():
     def __init__(self,name, modulus, poisson, density):
@@ -25,9 +24,14 @@ class Multi_armEnv(gym.Env):
     def __init__(self):
         self.state = []
         pass
+    def setup(saveoutput,headless,ramped,maxtime):
+        pass
+    
     def step(self, action):
         pass
     def reset(self):
         pass
     def render(self, mode = 'human',close = False):
+        pass
+    def reward():
         pass
