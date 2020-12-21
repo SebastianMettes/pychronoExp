@@ -47,7 +47,15 @@ class Multi_armEnv(gym.Env):
         self.mtorque = [0,0] #set intial torque   
         self.maxtorque=abs(maxtorque)
         self.target = target   
-        self.state = []#ADD INFORMATION 
+        arm1Pos = arm1.arm_tip.GetPos()
+        arm2Pos = arm2.arm_tip.GetPos()
+        arm1Vel = arm1.arm_tip.GetVel()
+        arm2Vel = arm2.arm_tip.GetVel()
+        arm1Acc = arm1.arm_tip.GetAcc()
+        arm2Acc = arm2.arm_tip.GetAcc()
+        
+
+        self.state = []#ADD INFORMATION, Link 1 X,Y, Vx, Vy, Ax, Ay, Link 2 X,Y,Vx,Vy,Ax,Ay, Torque 1, Torque 2, Theta1,Theta2, AngVel1,AngVel2,TargetX,TargetY
     def step(self, action):#action is a 1x2 list:
         #Determine current position (for reward calculations):
         self.state = self.state_new
@@ -63,9 +71,9 @@ class Multi_armEnv(gym.Env):
                     self.mtorque[i] = self.mtorque[i]-self.maxtorque/5 #ramp forces over 5 "steps"
 
             if abs(self.mtorque[i]) == self.maxtorque:
-                if ((action[i]>0) and (self.mtorque[i]<0):
+                if ((action[i]>0) and (self.mtorque[i]<0)):
                     self.mtorque[i] = self.mtorque[i]+self.maxtorque/5 
-                if ((action[i]<0) and (self.mtorque[i]>0):
+                if ((action[i]<0) and (self.mtorque[i]>0)):
                     self.mtorque[i] = self.mtorque[i]-self.maxtorque/5 
         self.arm1.set_torque(float(self.mtorque[0]))
         self.arm2.set_torque(float(self.mtorque[1]))
