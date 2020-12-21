@@ -8,7 +8,7 @@ import random
 import numpy as np
 from gym import error, spaces, utils
 from gym.utils import seeding
-from packages import multi_arm_assembler_3
+from envs.packages import multi_arm_assembler_3 as sim
 
 class Multi_armMaterial():
     def __init__(self,name, modulus, poisson, density):
@@ -47,9 +47,9 @@ class Multi_armEnv(gym.Env):
         self.mtorque = [0,0] #set intial torque   
         self.maxtorque=abs(maxtorque)
         self.target = target   
-        arm1Pos = arm1.arm_tip.GetPos()
-        arm2Pos = arm2.arm_tip.GetPos()
-        arm1Vel = arm1.arm_tip.GetVel()
+        arm1Pos = self.arm1.arm_tip.GetPos()
+        arm2Pos = self.arm2.arm_tip.GetPos()
+        arm1Vel = self.arm1.arm_tip.GetVel()
         arm2Vel = arm2.arm_tip.GetVel()
         arm1Acc = arm1.arm_tip.GetAcc()
         arm2Acc = arm2.arm_tip.GetAcc()
