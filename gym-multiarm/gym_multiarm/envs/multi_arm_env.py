@@ -37,7 +37,7 @@ class Multi_armEnv(gym.Env):
         self.headless = headless #Are you running a monitor and want to visual the simulation? Note, this adds significant calculation time
         self.maxtime = maxtime #How many seconds in simulation do you want to simulate?
         self.timestep = timestep #Timestep size in simulation, seconds
-        self.motor_system = sim.System("test") #Create the system
+        self.motor_system = sim.System("m1") #Create the system
         self.arm1 = sim.Motor_arm(self.motor_system.system,False,material,crossx,crossy,(0,0,0),(0,0,length1),0.000,10) #create arm in simulation
         self.arm2 = sim.Motor_arm(self.motor_system.system,False,material,crossx,crossy,(0,0,length1),(0,0,length1+length2),0.000,10,origin=False,stator_constraint=arm1.arm_tip)#create attached second arm
         if not headless:
@@ -53,10 +53,16 @@ class Multi_armEnv(gym.Env):
         arm2Vel = self.arm2.arm_tip.GetVel()
         arm1Acc = self.arm1.arm_tip.GetAcc()
         arm2Acc = self.arm2.arm_tip.GetAcc()
-        
+        motor1Pos = self.arm1.motor.GetMotorRot()
+        motor2Pos = self.arm2.motor.GetMotorRot()
+        motor1Vel = self.arm1.motor.GetMotorRot_dt()
+        motor2Vel = self.arm2.motor.GetMotorRot_dt()
 
-        self.state = []#ADD INFORMATION, Link 1 X,Y, Vx, Vy, Ax, Ay, Link 2 X,Y,Vx,Vy,Ax,Ay, Torque 1, Torque 2, Theta1,Theta2, AngVel1,AngVel2,TargetX,TargetY
+        self.state = [arm1Pos.x,arm1Pos.y,arm1Vel.x,arm1Vel.y,arm1Acc.x,arm1Acc.y,arm2Pos.x,arm2Pos.y,arm2Vel.x,arm2Vel.y,arm2Acc.x,arm2Acc.y,motor1Pos,Motor1Vel,self.mtorque[0],motor2Pos,Motor2Vel,self.mtorque[1],self.target[0],self.target[1]]
+        self.state_new = self.state
+        #ADD INFORMATION, Link 1 X,Y, Vx, Vy, Ax, Ay, Link 2 X,Y,Vx,Vy,Ax,Ay, Torque 1, Torque 2, Theta1,Theta2, AngVel1,AngVel2,TargetX,TargetY
     def step(self, action):#action is a 1x2 list:
+
         #Determine current position (for reward calculations):
         self.state = self.state_new
 
@@ -78,10 +84,22 @@ class Multi_armEnv(gym.Env):
         self.arm1.set_torque(float(self.mtorque[0]))
         self.arm2.set_torque(float(self.mtorque[1]))
         self.motor_system.do_sim_step(self.timestep)
-
+        
 
         #Determine new state:
-        self.state_new = []#NEED TO FILL OUT
+        arm1Pos = self.arm1.arm_tip.GetPos()
+        arm2Pos = self.arm2.arm_tip.GetPos()
+        arm1Vel = self.arm1.arm_tip.GetVel()
+        arm2Vel = self.arm2.arm_tip.GetVel()
+        arm1Acc = self.arm1.arm_tip.GetAcc()
+        arm2Acc = self.arm2.arm_tip.GetAcc()
+        motor1Pos = self.arm1.motor.GetMotorRot()
+        motor2Pos = self.arm2.motor.GetMotorRot()
+        motor1Vel = self.arm1.motor.GetMotorRot_dt()
+        motor2Vel = self.arm2.motor.GetMotorRot_dt()
+        self.state_new = [arm1Pos.x,arm1Pos.y,arm1Vel.x,arm1Vel.y,arm1Acc.x,arm1Acc.y,arm2Pos.x,arm2Pos.y,arm2Vel.x,arm2Vel.y,arm2Acc.x,arm2Acc.y,motor1Pos,Motor1Vel,self.mtorque[0],motor2Pos,Motor2Vel,self.mtorque[1],self.target[0],self.target[1]]
+        
+        return(self.state,self.state_new)
                 
 
     def reset(self):
