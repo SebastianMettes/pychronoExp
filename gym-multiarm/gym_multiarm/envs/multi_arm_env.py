@@ -8,7 +8,7 @@ import random
 import numpy as np
 from gym import error, spaces, utils
 from gym.utils import seeding
-from envs.packages import multi_arm_assembler_3 as sim
+from gym_multiarm.envs.packages import multi_arm_assembler_3 as sim
 
 class Multi_armMaterial():
     def __init__(self,name, modulus, poisson, density):
@@ -31,17 +31,17 @@ class Multi_armEnv(gym.Env):
             quit()
 
         self.saveoutput = saveoutput #Do you want to save all data outputs?
-        if self.saveoputput == True:
+        if self.saveoutput == True:
             self.stepname = str(timestep)
             self.savefile1 = []
         self.headless = headless #Are you running a monitor and want to visual the simulation? Note, this adds significant calculation time
         self.maxtime = maxtime #How many seconds in simulation do you want to simulate?
         self.timestep = timestep #Timestep size in simulation, seconds
         self.motor_system = sim.System("test") #Create the system
-        self.arm1 = sim.Motor_arm(motor_system.system,False,material,crossx,crossy,(0,0,0),(0,0,length1),0.000,10) #create arm in simulation
-        self.arm2 = sim.Motor_arm(motor_system.system,False,material,crossx,crossy,(0,0,length1),(0,0,length1+length2),0.000,10,origin=False,stator_constraint=arm1.arm_tip)#create attached second arm
+        self.arm1 = sim.Motor_arm(self.motor_system.system,False,material,crossx,crossy,(0,0,0),(0,0,length1),0.000,10) #create arm in simulation
+        self.arm2 = sim.Motor_arm(self.motor_system.system,False,material,crossx,crossy,(0,0,length1),(0,0,length1+length2),0.000,10,origin=False,stator_constraint=arm1.arm_tip)#create attached second arm
         if not headless:
-            self.motor_system.window(arm1,arm2,timestep,headless=headless,print_time=True) #create a window to view system if not headless
+            self.motor_system.window(self.arm1,self.arm2,timestep,headless=headless,print_time=True) #create a window to view system if not headless
         self.s1 = time.perf_counter()
         self.step = 0
         self.mtorque = [0,0] #set intial torque   
@@ -50,9 +50,9 @@ class Multi_armEnv(gym.Env):
         arm1Pos = self.arm1.arm_tip.GetPos()
         arm2Pos = self.arm2.arm_tip.GetPos()
         arm1Vel = self.arm1.arm_tip.GetVel()
-        arm2Vel = arm2.arm_tip.GetVel()
-        arm1Acc = arm1.arm_tip.GetAcc()
-        arm2Acc = arm2.arm_tip.GetAcc()
+        arm2Vel = self.arm2.arm_tip.GetVel()
+        arm1Acc = self.arm1.arm_tip.GetAcc()
+        arm2Acc = self.arm2.arm_tip.GetAcc()
         
 
         self.state = []#ADD INFORMATION, Link 1 X,Y, Vx, Vy, Ax, Ay, Link 2 X,Y,Vx,Vy,Ax,Ay, Torque 1, Torque 2, Theta1,Theta2, AngVel1,AngVel2,TargetX,TargetY
