@@ -24,7 +24,7 @@ class Multi_armEnv(gym.Env):
     def __init__(self):
         self.state = []
     
-    def state(self): #determine state of the arm 
+    def setstate(self): #determine state of the arm 
         arm1Pos = self.arm1.arm_tip.GetPos()
         arm2Pos = self.arm2.arm_tip.GetPos()
         arm1Vel = self.arm1.arm_tip.GetVel()
@@ -44,30 +44,27 @@ class Multi_armEnv(gym.Env):
         if len(target) != 2:
             print("Target is list of length 2, [x,y] coordinates")
             quit()
-
+        self.material = material
+        self.length1=length1
+        self.length2 = length2
+        self.crossx=crossx
+        self.crossy=crossy
         self.saveoutput = saveoutput #Do you want to save all data outputs?
-        if self.saveoutput == True:
-            self.stepname = str(timestep)
-            self.savefile1 = []
         self.headless = headless #Are you running a monitor and want to visual the simulation? Note, this adds significant calculation time
         self.maxtime = maxtime #How many seconds in simulation do you want to simulate?
         self.timestep = timestep #Timestep size in simulation, seconds
         self.motor_system = sim.System("m1") #Create the system
-        self.arm1 = sim.Motor_arm(self.motor_system.system,False,material,crossx,crossy,(0,0,0),(0,0,length1),0.000,10) #create arm in simulation
-        self.arm2 = sim.Motor_arm(self.motor_system.system,False,material,crossx,crossy,(0,0,length1),(0,0,length1+length2),0.000,10,origin=False,stator_constraint=arm1.arm_tip)#create attached second arm
+        reset(target)
         if not headless:
             self.motor_system.window(self.arm1,self.arm2,timestep,headless=headless,print_time=True) #create a window to view system if not headless
         self.s1 = time.perf_counter()
         self.step = 0
         self.mtorque = [0,0] #set intial torque   
         self.maxtorque=abs(maxtorque)
-        self.target = np.array(target)
-        self.state = state() 
-        self.state_new = self.state
-        self.position_original = np.array([self.state[6],self.state[7]])
-        #ADD INFORMATION, Link 1 X,Y, Vx, Vy, Ax, Ay, Link 2 X,Y,Vx,Vy,Ax,Ay, Torque 1, Torque 2, Theta1,Theta2, AngVel1,AngVel2,TargetX,TargetY
-    def step(self, action):#action is a 1x2 list:
 
+
+    def step(self, action):#action is a 1x2 list:
+        self.step = self.step+1
         #Determine current position (for reward calculations):
         self.state = self.state_new
 
@@ -92,15 +89,24 @@ class Multi_armEnv(gym.Env):
         
 
         #Determine new state:
-        self.state_new = state()
+        self.state_new = setstate()
 
         return(self.state,self.state_new,action)
                 
 
-    def reset(self):
-        pass
+    def reset(self,target):
+        self.arm1 = sim.Motor_arm(self.motor_system.system,False,self.material,self.crossx,self.crossy,(0,0,0),(0,0,self.length1),0.000,10) #create arm in simulation
+        self.arm2 = sim.Motor_arm(self.motor_system.system,False,self.material,self.crossx,self.crossy,(0,0,self.length1),(0,0,self.length1+self.length2),0.000,10,origin=False,stator_constraint=arm1.arm_tip)#create attached second arm
+        self.state = setstate() 
+        self.state_new = self.state
+        self.target = np.array(target)
+        self.position_original = np.array([self.state[6],self.state[7]])
+
     def render(self, mode = 'human',close = False):
-        pass
+        self.motor_system.window.BeginScene() 
+        self.motor_system.window.DrawAll()
+        self.motor_system.window.EndScene()
+        
     def reward(self):
         tip_previous = np.array([self.state[6],self.state[7]])
         tip_new = np.array([self.state_new[6],self.state_new[7]])
@@ -109,9 +115,9 @@ class Multi_armEnv(gym.Env):
         dist_max = self.target-self.position_original
         dist_max = sqrt(dist_max[0]**2+dist_max[1]**2)
         if dist_change > 0:
-            reward = distance_change/distance_max
+            reward = dist_change/dist_max
         if dist_change <0:
-            2*reward = distance_change/distance_max
+            reward = 2*dist_change/dist_max
         else:
             reward = 0
         return(reward)
