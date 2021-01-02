@@ -1,1 +1,2 @@
-#from gym_multiarm.envs.multi_arm_env import multi_armEnv 
+from gym_multiarm.envs.multi_arm_env import Multi_armEnv 
+from gym_multiarm.envs.multi_arm_env import Multi_armMaterial
