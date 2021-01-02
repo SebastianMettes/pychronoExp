@@ -54,9 +54,9 @@ class Multi_armEnv(gym.Env):
         self.maxtime = maxtime #How many seconds in simulation do you want to simulate?
         self.timestep = timestep #Timestep size in simulation, seconds
         self.motor_system = sim.System("m1") #Create the system
-        reset(target)
+        self.reset(target)
         if not headless:
-            self.motor_system.window(self.arm1,self.arm2,timestep,headless=headless,print_time=True) #create a window to view system if not headless
+            self.motor_system.Window(self.arm1,self.arm2,timestep,headless=headless,print_time=True) #create a window to view system if not headless
         self.s1 = time.perf_counter()
         self.step = 0
         self.mtorque = [0,0] #set intial torque   
@@ -89,7 +89,7 @@ class Multi_armEnv(gym.Env):
         
 
         #Determine new state:
-        self.state_new = setstate()
+        self.state_new = self.setstate()
 
         return(self.state,self.state_new,action)
                 
@@ -97,7 +97,7 @@ class Multi_armEnv(gym.Env):
     def reset(self,target):
         self.arm1 = sim.Motor_arm(self.motor_system.system,False,self.material,self.crossx,self.crossy,(0,0,0),(0,0,self.length1),0.000,10) #create arm in simulation
         self.arm2 = sim.Motor_arm(self.motor_system.system,False,self.material,self.crossx,self.crossy,(0,0,self.length1),(0,0,self.length1+self.length2),0.000,10,origin=False,stator_constraint=arm1.arm_tip)#create attached second arm
-        self.state = setstate() 
+        self.state = self.setstate() 
         self.state_new = self.state
         self.target = np.array(target)
         self.position_original = np.array([self.state[6],self.state[7]])
@@ -113,7 +113,7 @@ class Multi_armEnv(gym.Env):
         dist = (tip_previous-tip_new)
         dist_change = np.sqrt(dist[0]**2+dist[1]**2)
         dist_max = self.target-self.position_original
-        dist_max = sqrt(dist_max[0]**2+dist_max[1]**2)
+        dist_max = np.sqrt(dist_max[0]**2+dist_max[1]**2)
         if dist_change > 0:
             reward = dist_change/dist_max
         if dist_change <0:

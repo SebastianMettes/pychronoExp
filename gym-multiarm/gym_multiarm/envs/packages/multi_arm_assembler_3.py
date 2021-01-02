@@ -26,10 +26,10 @@ class System():
         self.system.SetSolver(solver)
 
     
-    def window(self,arm1,arm2,timestep,print_time = False,headless=True,):
+    def Window(self,arm1,arm2,timestep,print_time = False,headless=True,):
 
         if not headless:
-            self.window = chronoirr.ChIrrApp(self.system,self.name,chronoirr.dimension2du(1920,1080)) #Create window for visualization
+            self.window =chronoirr.ChIrrApp(self.system,self.name,chronoirr.dimension2du(1920,1080)) #Create window for visualization
             self.window.AddTypicalCamera(chronoirr.vector3df(1,1,2))
             self.window.AddTypicalLights()
             self.window.AddTypicalSky()
