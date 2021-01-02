@@ -38,7 +38,7 @@ class Multi_armEnv(gym.Env):
 
         self.state_new = [arm1Pos.x,arm1Pos.y,arm1Vel.x,arm1Vel.y,arm1Acc.x,arm1Acc.y,arm2Pos.x,arm2Pos.y,arm2Vel.x,arm2Vel.y,arm2Acc.x,arm2Acc.y,motor1Pos,motor1Vel,self.mtorque[0],motor2Pos,motor2Vel,self.mtorque[1],self.target[0],self.target[1]]
         
-    def setup(self,saveoutput,headless,maxtime,crossx,crossy,length1,length2,material,timestep,maxtorque,target):
+    def reset(self,saveoutput,headless,maxtime,crossx,crossy,length1,length2,material,timestep,maxtorque,target):
         #Check input information:
         if len(target) != 2:
             print("Target is list of length 2, [x,y] coordinates")
@@ -57,10 +57,16 @@ class Multi_armEnv(gym.Env):
 
 
         self.s1 = time.perf_counter()
-        self.step = 0
         self.mtorque = [0,0] #set intial torque   
         self.maxtorque=abs(maxtorque)
-        self.reset(target)
+        self.arm1 = sim.Motor_arm(self.motor_system.system,False,self.material,self.crossx,self.crossy,(0,0,0),(0,0,self.length1),0.000,10) #create arm in simulation
+        self.arm2 = sim.Motor_arm(self.motor_system.system,False,self.material,self.crossx,self.crossy,(0,0,self.length1),(0,0,self.length1+self.length2),0.000,10,origin=False,stator_constraint=self.arm1.arm_tip)#create attached second arm
+        
+        self.getstate() 
+        self.state = self.state_new
+        self.target = np.array(target)
+        self.position_original = np.array([self.state[6],self.state[7]])
+        self.step = 0
         if not headless:
             self.motor_system.Window(self.arm1,self.arm2,timestep,headless=headless,print_time=True) #create a window to view system if not headless
 
@@ -95,14 +101,8 @@ class Multi_armEnv(gym.Env):
         return(self.state,self.state_new,action)
                 
 
-    def reset(self,target):
-        self.arm1 = sim.Motor_arm(self.motor_system.system,False,self.material,self.crossx,self.crossy,(0,0,0),(0,0,self.length1),0.000,10) #create arm in simulation
-        self.arm2 = sim.Motor_arm(self.motor_system.system,False,self.material,self.crossx,self.crossy,(0,0,self.length1),(0,0,self.length1+self.length2),0.000,10,origin=False,stator_constraint=self.arm1.arm_tip)#create attached second arm
-        
-        self.getstate() 
-        self.state = self.state_new
-        self.target = np.array(target)
-        self.position_original = np.array([self.state[6],self.state[7]])
+
+
 
     def render(self, mode = 'human',close = False):
         self.motor_system.window.BeginScene() 
@@ -112,15 +112,18 @@ class Multi_armEnv(gym.Env):
     def reward(self):
         tip_previous = np.array([self.state[6],self.state[7]])
         tip_new = np.array([self.state_new[6],self.state_new[7]])
-        
-        dist = (tip_previous-tip_new)
-        dist_change = np.sqrt(dist[0]**2+dist[1]**2)
+
+        dist_previous = (tip_previous-self.target)
+        dist_previous = np.sqrt(dist_previous[0]**2+dist_previous[1]**2)
+        dist_new = (tip_new-self.target)
+        dist_new = np.sqrt(dist_new[0]**2+dist_new[1]**2)
+        dist_change = dist_previous-dist_new
         dist_max = self.target-self.position_original
         dist_max = np.sqrt(dist_max[0]**2+dist_max[1]**2)
         if dist_change > 0:
             reward = dist_change/dist_max
         elif dist_change <0:
-            reward = -2*dist_change/dist_max
+            reward = 2*dist_change/dist_max
         else:
             reward = 0
         return(reward)
@@ -132,8 +135,14 @@ class Multi_armEnv(gym.Env):
 if __name__=="__main__":
     steel = Multi_armMaterial("steel",3.0E9,0.5,1300)
     environmentTest = Multi_armEnv()
-    environmentTest.setup(False,False,3,0.02,0.0125,1.5,1,steel,0.005,10,[-0.5,1.25])
-    for i in range(100):
+    environmentTest.reset(False,False,3,0.02,0.0125,1.5,1,steel,0.005,1,[-0.5,1.25])
+    for i in range(1000):
         environmentTest.render()
         environmentTest.forwardStep([1,1])
         print(environmentTest.reward())
+    environmentTest.reset(False,False,3,0.02,0.0125,1.5,1,steel,0.005,1,[-0.5,1.25])
+    for i in range(1000):
+        environmentTest.render()
+        environmentTest.forwardStep([-1,-1])
+        print(environmentTest.reward())
+
