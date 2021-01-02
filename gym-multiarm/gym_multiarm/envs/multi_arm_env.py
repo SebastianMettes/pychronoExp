@@ -23,6 +23,21 @@ class Multi_armEnv(gym.Env):
 
     def __init__(self):
         self.state = []
+    
+    def state(self): #determine state of the arm 
+        arm1Pos = self.arm1.arm_tip.GetPos()
+        arm2Pos = self.arm2.arm_tip.GetPos()
+        arm1Vel = self.arm1.arm_tip.GetVel()
+        arm2Vel = self.arm2.arm_tip.GetVel()
+        arm1Acc = self.arm1.arm_tip.GetAcc()
+        arm2Acc = self.arm2.arm_tip.GetAcc()
+        motor1Pos = self.arm1.motor.GetMotorRot()
+        motor2Pos = self.arm2.motor.GetMotorRot()
+        motor1Vel = self.arm1.motor.GetMotorRot_dt()
+        motor2Vel = self.arm2.motor.GetMotorRot_dt()
+
+        self.state = [arm1Pos.x,arm1Pos.y,arm1Vel.x,arm1Vel.y,arm1Acc.x,arm1Acc.y,arm2Pos.x,arm2Pos.y,arm2Vel.x,arm2Vel.y,arm2Acc.x,arm2Acc.y,motor1Pos,motor1Vel,self.mtorque[0],motor2Pos,motor2Vel,self.mtorque[1],self.target[0],self.target[1]]
+        return(self.state)
 
     def setup(self,saveoutput,headless,maxtime,crossx,crossy,length1,length2,material,timestep,maxtorque,target):
         #Check input information:
@@ -46,20 +61,10 @@ class Multi_armEnv(gym.Env):
         self.step = 0
         self.mtorque = [0,0] #set intial torque   
         self.maxtorque=abs(maxtorque)
-        self.target = target   
-        arm1Pos = self.arm1.arm_tip.GetPos()
-        arm2Pos = self.arm2.arm_tip.GetPos()
-        arm1Vel = self.arm1.arm_tip.GetVel()
-        arm2Vel = self.arm2.arm_tip.GetVel()
-        arm1Acc = self.arm1.arm_tip.GetAcc()
-        arm2Acc = self.arm2.arm_tip.GetAcc()
-        motor1Pos = self.arm1.motor.GetMotorRot()
-        motor2Pos = self.arm2.motor.GetMotorRot()
-        motor1Vel = self.arm1.motor.GetMotorRot_dt()
-        motor2Vel = self.arm2.motor.GetMotorRot_dt()
-
-        self.state = [arm1Pos.x,arm1Pos.y,arm1Vel.x,arm1Vel.y,arm1Acc.x,arm1Acc.y,arm2Pos.x,arm2Pos.y,arm2Vel.x,arm2Vel.y,arm2Acc.x,arm2Acc.y,motor1Pos,Motor1Vel,self.mtorque[0],motor2Pos,Motor2Vel,self.mtorque[1],self.target[0],self.target[1]]
+        self.target = np.array(target)
+        self.state = state() 
         self.state_new = self.state
+        self.position_original = np.array([self.state[6],self.state[7]])
         #ADD INFORMATION, Link 1 X,Y, Vx, Vy, Ax, Ay, Link 2 X,Y,Vx,Vy,Ax,Ay, Torque 1, Torque 2, Theta1,Theta2, AngVel1,AngVel2,TargetX,TargetY
     def step(self, action):#action is a 1x2 list:
 
@@ -87,19 +92,9 @@ class Multi_armEnv(gym.Env):
         
 
         #Determine new state:
-        arm1Pos = self.arm1.arm_tip.GetPos()
-        arm2Pos = self.arm2.arm_tip.GetPos()
-        arm1Vel = self.arm1.arm_tip.GetVel()
-        arm2Vel = self.arm2.arm_tip.GetVel()
-        arm1Acc = self.arm1.arm_tip.GetAcc()
-        arm2Acc = self.arm2.arm_tip.GetAcc()
-        motor1Pos = self.arm1.motor.GetMotorRot()
-        motor2Pos = self.arm2.motor.GetMotorRot()
-        motor1Vel = self.arm1.motor.GetMotorRot_dt()
-        motor2Vel = self.arm2.motor.GetMotorRot_dt()
-        self.state_new = [arm1Pos.x,arm1Pos.y,arm1Vel.x,arm1Vel.y,arm1Acc.x,arm1Acc.y,arm2Pos.x,arm2Pos.y,arm2Vel.x,arm2Vel.y,arm2Acc.x,arm2Acc.y,motor1Pos,Motor1Vel,self.mtorque[0],motor2Pos,Motor2Vel,self.mtorque[1],self.target[0],self.target[1]]
-        
-        return(self.state,self.state_new)
+        self.state_new = state()
+
+        return(self.state,self.state_new,action)
                 
 
     def reset(self):
@@ -107,6 +102,18 @@ class Multi_armEnv(gym.Env):
     def render(self, mode = 'human',close = False):
         pass
     def reward(self):
-        pass
+        tip_previous = np.array([self.state[6],self.state[7]])
+        tip_new = np.array([self.state_new[6],self.state_new[7]])
+        dist = (tip_previous-tip_new)
+        dist_change = np.sqrt(dist[0]**2+dist[1]**2)
+        dist_max = self.target-self.position_original
+        dist_max = sqrt(dist_max[0]**2+dist_max[1]**2)
+        if dist_change > 0:
+            reward = distance_change/distance_max
+        if dist_change <0:
+            2*reward = distance_change/distance_max
+        else:
+            reward = 0
+        return(reward)
     def save(self):
         pass
