@@ -73,7 +73,7 @@ class Multi_armEnv(gym.Env):
     def forwardStep(self, action):#action is a 1x2 list:
         self.step = self.step+1
         #Determine current position (for reward calculations):
-        self.state = self.state_new.copy()
+        self.state = self.state_new
 
         #determine torque values to apply:
         for i in range(0,len(action)):
@@ -135,14 +135,32 @@ class Multi_armEnv(gym.Env):
 if __name__=="__main__":
     steel = Multi_armMaterial("steel",3.0E9,0.5,1300)
     environmentTest = Multi_armEnv()
-    environmentTest.reset(False,False,3,0.02,0.0125,1.5,1,steel,0.005,1,[-0.5,1.25])
-    for i in range(1000):
-        environmentTest.render()
+    environmentTest.reset(False,True,3,0.02,0.0125,1.5,1,steel,0.001,1,[-0.5,1.25])
+    for i in range(3000):
+        #environmentTest.render()
         environmentTest.forwardStep([1,1])
-        print(environmentTest.reward())
-    environmentTest.reset(False,False,3,0.02,0.0125,1.5,1,steel,0.005,1,[-0.5,1.25])
-    for i in range(1000):
-        environmentTest.render()
-        environmentTest.forwardStep([-1,-1])
-        print(environmentTest.reward())
+        environmentTest.reward()
+
+    aa = time.perf_counter()-environmentTest.s1
+    environmentTest.reset(False,True,3,0.02,0.0125,1.5,1,steel,0.001,1,[-0.5,1.25])
+    for i in range(3000):
+        #environmentTest.render()
+        environmentTest.forwardStep([1,1])
+        environmentTest.reward()
+    ab = time.perf_counter()-environmentTest.s1
+    environmentTest.reset(False,True,3,0.02,0.0125,1.5,1,steel,0.001,1,[-0.5,1.25])
+    for i in range(3000):
+        #environmentTest.render()
+        environmentTest.forwardStep([1,1])
+        environmentTest.reward()
+
+    ac = time.perf_counter()-environmentTest.s1
+    environmentTest.reset(False,True,3,0.02,0.0125,1.5,1,steel,0.001,1,[-0.5,1.25])
+    for i in range(3000):
+        #environmentTest.render()
+        environmentTest.forwardStep([1,1])
+        environmentTest.reward()
+
+    ad = time.perf_counter()-environmentTest.s1
+    print(aa,ab,ac,ad)
 
