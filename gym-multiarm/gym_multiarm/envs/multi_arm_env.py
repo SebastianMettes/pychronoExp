@@ -24,7 +24,7 @@ class Multi_armEnv(gym.Env):
     def __init__(self):
         self.state = []
     
-    def setstate(self): #determine state of the arm 
+    def getstate(self): #determine state of the arm 
         arm1Pos = self.arm1.arm_tip.GetPos()
         arm2Pos = self.arm2.arm_tip.GetPos()
         arm1Vel = self.arm1.arm_tip.GetVel()
@@ -89,7 +89,7 @@ class Multi_armEnv(gym.Env):
         
 
         #Determine new state:
-        self.state_new = self.setstate()
+        self.state_new = self.getstate()
 
         return(self.state,self.state_new,action)
                 
@@ -97,7 +97,7 @@ class Multi_armEnv(gym.Env):
     def reset(self,target):
         self.arm1 = sim.Motor_arm(self.motor_system.system,False,self.material,self.crossx,self.crossy,(0,0,0),(0,0,self.length1),0.000,10) #create arm in simulation
         self.arm2 = sim.Motor_arm(self.motor_system.system,False,self.material,self.crossx,self.crossy,(0,0,self.length1),(0,0,self.length1+self.length2),0.000,10,origin=False,stator_constraint=arm1.arm_tip)#create attached second arm
-        self.state = self.setstate() 
+        self.state = self.getstate() 
         self.state_new = self.state
         self.target = np.array(target)
         self.position_original = np.array([self.state[6],self.state[7]])
