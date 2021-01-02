@@ -121,5 +121,5 @@ class Multi_armEnv(gym.Env):
         else:
             reward = 0
         return(reward)
-    def save(self):
+    def save(self): #Future function to save all pyChrono data to create deep network which simulates the motion.
         pass
