@@ -27,23 +27,23 @@ class Multi_armEnv(gym.Env):
     def getstate(self): #determine state of the arm 
         arm1Pos = self.arm1.arm_tip.GetPos()
         arm2Pos = self.arm2.arm_tip.GetPos()
-        arm1Vel = self.arm1.arm_tip.GetVel()
-        arm2Vel = self.arm2.arm_tip.GetVel()
-        arm1Acc = self.arm1.arm_tip.GetAcc()
-        arm2Acc = self.arm2.arm_tip.GetAcc()
+        arm1Vel = self.arm1.arm_tip.GetPos_dt()
+        arm2Vel = self.arm2.arm_tip.GetPos_dt()
+        arm1Acc = self.arm1.arm_tip.GetPos_dtdt()
+        arm2Acc = self.arm2.arm_tip.GetPos_dtdt()
         motor1Pos = self.arm1.motor.GetMotorRot()
         motor2Pos = self.arm2.motor.GetMotorRot()
         motor1Vel = self.arm1.motor.GetMotorRot_dt()
         motor2Vel = self.arm2.motor.GetMotorRot_dt()
 
-        self.state = [arm1Pos.x,arm1Pos.y,arm1Vel.x,arm1Vel.y,arm1Acc.x,arm1Acc.y,arm2Pos.x,arm2Pos.y,arm2Vel.x,arm2Vel.y,arm2Acc.x,arm2Acc.y,motor1Pos,motor1Vel,self.mtorque[0],motor2Pos,motor2Vel,self.mtorque[1],self.target[0],self.target[1]]
-        return(self.state)
-
+        self.state_new = [arm1Pos.x,arm1Pos.y,arm1Vel.x,arm1Vel.y,arm1Acc.x,arm1Acc.y,arm2Pos.x,arm2Pos.y,arm2Vel.x,arm2Vel.y,arm2Acc.x,arm2Acc.y,motor1Pos,motor1Vel,self.mtorque[0],motor2Pos,motor2Vel,self.mtorque[1],self.target[0],self.target[1]]
+        
     def setup(self,saveoutput,headless,maxtime,crossx,crossy,length1,length2,material,timestep,maxtorque,target):
         #Check input information:
         if len(target) != 2:
             print("Target is list of length 2, [x,y] coordinates")
             quit()
+        self.target=target
         self.material = material
         self.length1=length1
         self.length2 = length2
@@ -54,19 +54,20 @@ class Multi_armEnv(gym.Env):
         self.maxtime = maxtime #How many seconds in simulation do you want to simulate?
         self.timestep = timestep #Timestep size in simulation, seconds
         self.motor_system = sim.System("m1") #Create the system
-        self.reset(target)
-        if not headless:
-            self.motor_system.Window(self.arm1,self.arm2,timestep,headless=headless,print_time=True) #create a window to view system if not headless
+
+
         self.s1 = time.perf_counter()
         self.step = 0
         self.mtorque = [0,0] #set intial torque   
         self.maxtorque=abs(maxtorque)
+        self.reset(target)
+        if not headless:
+            self.motor_system.Window(self.arm1,self.arm2,timestep,headless=headless,print_time=True) #create a window to view system if not headless
 
-
-    def step(self, action):#action is a 1x2 list:
+    def forwardStep(self, action):#action is a 1x2 list:
         self.step = self.step+1
         #Determine current position (for reward calculations):
-        self.state = self.state_new
+        self.state = self.state_new.copy()
 
         #determine torque values to apply:
         for i in range(0,len(action)):
@@ -89,16 +90,17 @@ class Multi_armEnv(gym.Env):
         
 
         #Determine new state:
-        self.state_new = self.getstate()
+        self.getstate()
 
         return(self.state,self.state_new,action)
                 
 
     def reset(self,target):
         self.arm1 = sim.Motor_arm(self.motor_system.system,False,self.material,self.crossx,self.crossy,(0,0,0),(0,0,self.length1),0.000,10) #create arm in simulation
-        self.arm2 = sim.Motor_arm(self.motor_system.system,False,self.material,self.crossx,self.crossy,(0,0,self.length1),(0,0,self.length1+self.length2),0.000,10,origin=False,stator_constraint=arm1.arm_tip)#create attached second arm
-        self.state = self.getstate() 
-        self.state_new = self.state
+        self.arm2 = sim.Motor_arm(self.motor_system.system,False,self.material,self.crossx,self.crossy,(0,0,self.length1),(0,0,self.length1+self.length2),0.000,10,origin=False,stator_constraint=self.arm1.arm_tip)#create attached second arm
+        
+        self.getstate() 
+        self.state = self.state_new
         self.target = np.array(target)
         self.position_original = np.array([self.state[6],self.state[7]])
 
@@ -110,16 +112,28 @@ class Multi_armEnv(gym.Env):
     def reward(self):
         tip_previous = np.array([self.state[6],self.state[7]])
         tip_new = np.array([self.state_new[6],self.state_new[7]])
+        
         dist = (tip_previous-tip_new)
         dist_change = np.sqrt(dist[0]**2+dist[1]**2)
         dist_max = self.target-self.position_original
         dist_max = np.sqrt(dist_max[0]**2+dist_max[1]**2)
         if dist_change > 0:
             reward = dist_change/dist_max
-        if dist_change <0:
-            reward = 2*dist_change/dist_max
+        elif dist_change <0:
+            reward = -2*dist_change/dist_max
         else:
             reward = 0
         return(reward)
     def save(self): #Future function to save all pyChrono data to create deep network which simulates the motion.
         pass
+
+
+
+if __name__=="__main__":
+    steel = Multi_armMaterial("steel",3.0E9,0.5,1300)
+    environmentTest = Multi_armEnv()
+    environmentTest.setup(False,False,3,0.02,0.0125,1.5,1,steel,0.005,10,[-0.5,1.25])
+    for i in range(100):
+        environmentTest.render()
+        environmentTest.forwardStep([1,1])
+        print(environmentTest.reward())
