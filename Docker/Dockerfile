@@ -16,14 +16,16 @@ RUN bash Miniconda3-latest-Linux-x86_64.sh -b -p $HOME/miniconda && \
     /root/miniconda/bin/conda clean -afy
     
 RUN git clone https://github.com/SebastianMettes/pychronoExp
-
+COPY environment.yml /environment.yml
+COPY pythonenv.sh /pythonenv.sh
 #RUN eval "$(/root/miniconda/bin/conda shell.bash hook)" && conda init && 
 SHELL ["/root/miniconda/bin/conda", "run", "-n", "base", "/bin/bash", "-c"]
-RUN conda create -n py379 -y python==3.7.9
+RUN conda env create -f environment.yml
+#RUN /pythonenv.sh
+SHELL ["/root/miniconda/bin/conda", "run", "-n", "379", "/bin/bash", "-c"]
 
-SHELL ["/root/miniconda/bin/conda", "run", "-n", "py379", "/bin/bash", "-c"]
 
-SHELL ["/bin/bash"]
+#SHELL ["/bin/bash"]
 
 
 
