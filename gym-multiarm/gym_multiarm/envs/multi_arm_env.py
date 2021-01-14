@@ -2,7 +2,11 @@ import gym
 import pychrono as chrono
 import pychrono.fea as fea
 import pychrono.mkl as mkl
-import pychrono.irrlicht as chronoirr
+try: 
+    import pychrono.irrlicht as chronoirr
+except:
+    print('only headless mode supported')
+    pass
 import time
 import random
 import numpy as np
