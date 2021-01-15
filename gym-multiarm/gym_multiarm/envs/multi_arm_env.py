@@ -147,10 +147,13 @@ if __name__=="__main__":
     steel = Multi_armMaterial("steel",3.0E9,0.5,1300)
     environmentTest = Multi_armEnv()
     environmentTest.reset(False,True,3,0.02,0.0125,1.5,1,steel,0.001,1,[-0.5,1.25])
+    state_tensor = []
+
     for i in range(3000):
         #environmentTest.render()
-        environmentTest.forwardStep([1,1])
-        environmentTest.reward()
+        state,state_new,action = environmentTest.forwardStep([1,1])
+        reward = environmentTest.reward()
+        state_tensor.append((state,state_new,action,reward))
 
     aa = time.perf_counter()-environmentTest.s1
     environmentTest.reset(False,True,3,0.02,0.0125,1.5,1,steel,0.001,1,[-0.5,1.25])
@@ -174,4 +177,5 @@ if __name__=="__main__":
 
     ad = time.perf_counter()-environmentTest.s1
     print(aa,ab,ac,ad)
+
 
