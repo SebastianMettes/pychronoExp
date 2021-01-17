@@ -114,11 +114,12 @@ class Multi_armEnv(gym.Env):
 
 
 
-
+    
     def render(self, mode = 'human',close = False):
-        self.motor_system.window.BeginScene() 
-        self.motor_system.window.DrawAll()
-        self.motor_system.window.EndScene()
+        if self.headless == False:
+            self.motor_system.window.BeginScene() 
+            self.motor_system.window.DrawAll()
+            self.motor_system.window.EndScene()
         
     def reward(self):
         tip_previous = np.array([self.state[6],self.state[7]])
@@ -146,11 +147,11 @@ class Multi_armEnv(gym.Env):
 if __name__=="__main__":
     steel = Multi_armMaterial("steel",3.0E9,0.5,1300)
     environmentTest = Multi_armEnv()
-    environmentTest.reset(False,True,3,0.02,0.0125,1.5,1,steel,0.001,1,[-0.5,1.25])
+    environmentTest.reset(False,False,3,0.02,0.0125,1.5,1,steel,0.001,1,[-0.5,1.25])
     state_tensor = []
 
     for i in range(3000):
-        #environmentTest.render()
+        environmentTest.render()
         state,state_new,action = environmentTest.forwardStep([1,1])
         reward = environmentTest.reward()
         state_tensor.append((state,state_new,action,reward))
