@@ -23,6 +23,7 @@ RUN conda env create -f environment.yml
 
 SHELL ["/root/miniconda/bin/conda", "run", "-n", "379", "/bin/bash", "-c"]
 
+
 COPY pythonenv.sh /pythonenv.sh
 #SHELL ["/bin/bash"]
 CMD "/pythonenv.sh"
