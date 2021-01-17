@@ -16,10 +16,10 @@ try:
     from gym_multiarm.envs.packages import multi_arm_assembler_3 as sim
 except:
     pass
-try:
-    from packages import multi_arm_assembler_3 as sim
-except:
-    pass
+#try:
+#    from packages import multi_arm_assembler_3 as sim
+#except:
+#    pass
 
 class Multi_armMaterial():
     def __init__(self,name, modulus, poisson, density):

@@ -22,8 +22,7 @@ SHELL ["/root/miniconda/bin/conda", "run", "-n", "base", "/bin/bash", "-c"]
 RUN conda env create -f environment.yml
 
 SHELL ["/root/miniconda/bin/conda", "run", "-n", "379", "/bin/bash", "-c"]
-
-
+RUN pip install -e /pychronoExp/gym-multiarm
 COPY pythonenv.sh /pythonenv.sh
 #SHELL ["/bin/bash"]
 CMD "/pythonenv.sh"
