@@ -1,0 +1,26 @@
+{
+    "dimensions":
+    {
+        "arm_length":1.1,
+        "arm_width":0.02,
+        "arm_height":0.0125
+    },
+    "num_steps":3000,
+    "step_size":0.001,
+    "max_torque":1,    
+    "materials":
+    {
+        "steel":
+        {
+        "E":2.15E9,
+        "poisson":0.5,
+        "density":8050
+        },
+        "pla":
+        {
+            "E":2.3E7,
+            "poisson":0.5,
+            "density":1240
+        }
+    }
+}

@@ -49,7 +49,7 @@ class Multi_armEnv(gym.Env):
 
         self.state_new = [arm1Pos.x,arm1Pos.y,arm1Vel.x,arm1Vel.y,arm1Acc.x,arm1Acc.y,arm2Pos.x,arm2Pos.y,arm2Vel.x,arm2Vel.y,arm2Acc.x,arm2Acc.y,motor1Pos,motor1Vel,self.mtorque[0],motor2Pos,motor2Vel,self.mtorque[1],self.target[0],self.target[1]]
         
-    def reset(self,saveoutput,headless,maxtime,crossx,crossy,length1,length2,material,timestep,maxtorque,target):
+    def reset(self,saveoutput,headless,crossx,crossy,length1,length2,material,timestep,maxtorque,target):
         #Check input information:
         if len(target) != 2:
             print("Target is list of length 2, [x,y] coordinates")
@@ -62,7 +62,7 @@ class Multi_armEnv(gym.Env):
         self.crossy=crossy
         self.saveoutput = saveoutput #Do you want to save all data outputs?
         self.headless = headless #Are you running a monitor and want to visual the simulation? Note, this adds significant calculation time
-        self.maxtime = maxtime #How many seconds in simulation do you want to simulate?
+        
         self.timestep = timestep #Timestep size in simulation, seconds
         self.motor_system = sim.System("m1") #Create the system
 
@@ -149,7 +149,7 @@ class Multi_armEnv(gym.Env):
 if __name__=="__main__":
     steel = Multi_armMaterial("steel",3.0E9,0.5,1300)
     environmentTest = Multi_armEnv()
-    environmentTest.reset(False,True,3,0.02,0.0125,1.5,1,steel,0.001,1,[-0.5,1.25])
+    environmentTest.reset(False,True,0.02,0.0125,1.5,1,steel,0.001,1,[-0.5,1.25])
     state_tensor = []
 
     for i in range(3000):
@@ -159,20 +159,20 @@ if __name__=="__main__":
         state_tensor.append((state,state_new,action,reward))
 
     aa = time.perf_counter()-environmentTest.s1
-    environmentTest.reset(False,True,3,0.02,0.0125,1.5,1,steel,0.001,1,[-0.5,1.25])
+    environmentTest.reset(False,True,0.02,0.0125,1.5,1,steel,0.001,1,[-0.5,1.25])
     for i in range(3000):
         #environmentTest.render()
         environmentTest.forwardStep([1,1])
         environmentTest.reward()
     ab = time.perf_counter()-environmentTest.s1
-    environmentTest.reset(False,True,3,0.02,0.0125,1.5,1,steel,0.001,1,[-0.5,1.25])
+    environmentTest.reset(False,True,0.02,0.0125,1.5,1,steel,0.001,1,[-0.5,1.25])
     for i in range(3000):
         #environmentTest.render()
         environmentTest.forwardStep([1,1])
         environmentTest.reward()
 
     ac = time.perf_counter()-environmentTest.s1
-    environmentTest.reset(False,True,3,0.02,0.0125,1.5,1,steel,0.001,1,[-0.5,1.25])
+    environmentTest.reset(False,True,0.02,0.0125,1.5,1,steel,0.001,1,[-0.5,1.25])
     for i in range(3000):
         #environmentTest.render()
         environmentTest.forwardStep([1,1])
