@@ -11,7 +11,7 @@ import json
 #Setup Environment
 #import config file
 
-with open("config.json","r") as file:
+with open("../pychronoExp/config.json","r") as file:
     config=json.load(file)
 
 #load config.json here... 
@@ -42,7 +42,7 @@ while True:
     now = datetime.now()
     date_time = now.strftime("%Y%m%d%H%M%S")
     agentName = agent_name()
-    filename = agentName+"."+hostName+"."+date_time+".JSON"
+    filename = config["save_dir"]+agentName+"."+hostName+"."+date_time+".JSON"
     for i in range(numSteps):
         #environmentTest.render()
         action = calc_action()
