@@ -15,8 +15,6 @@ import uuid
 
 host_id = uuid.uuid4()
 
-
-
 #load config.json here... 
 with open("/data/sim/config.json","r") as file:
     config=json.load(file)
@@ -50,7 +48,7 @@ while True:
     now = datetime.now()
     date_time = now.strftime("%Y%m%d%H%M%S")
     filename = str(host_id)+"."+date_time+".JSON"
-    filename = os.path.join(config["save_dir"],agent_id,filename)
+    filename = os.path.join(config["save_dir"],"trial",agent_id,filename)
     for i in range(numSteps):
         #environmentTest.render()
         action = calc_action(agent_id,state_tensor) 

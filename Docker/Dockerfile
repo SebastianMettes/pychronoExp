@@ -24,6 +24,12 @@ RUN conda env create -f environment.yml
 SHELL ["/root/miniconda/bin/conda", "run", "-n", "379", "/bin/bash", "-c"]
 RUN pip install -e /pychronoExp/gym-multiarm
 COPY pythonenv.sh /pythonenv.sh
+RUN mkdir /data
+RUN mkdir /data/sim
+RUN mkdir /data/sim/trial
+RUN mkdir /data/sim/agent
+RUN mkdir '/data/sim/trial/1.000'
+COPY config.json /data/sim/config.json
 #SHELL ["/bin/bash"]
 CMD "/pythonenv.sh"
 
