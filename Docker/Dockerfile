@@ -17,7 +17,7 @@ RUN bash Miniconda3-latest-Linux-x86_64.sh -b -p $HOME/miniconda && \
     
 RUN git clone https://github.com/SebastianMettes/pychronoExp
 COPY environment.yml /environment.yml
-#RUN eval "$(/root/miniconda/bin/conda shell.bash hook)" && conda init && 
+
 SHELL ["/root/miniconda/bin/conda", "run", "-n", "base", "/bin/bash", "-c"]
 RUN conda env create -f environment.yml
 
@@ -27,15 +27,11 @@ COPY pythonenv.sh /pythonenv.sh
 RUN mkdir /data
 RUN mkdir /data/sim
 RUN mkdir /data/sim/trial
+RUN mkdir '/data/sim/trial/1'
 RUN mkdir /data/sim/agent
-RUN mkdir '/data/sim/trial/1.000'
+RUN mkdir '/data/sim/agent/1'
 COPY config.json /data/sim/config.json
-#SHELL ["/bin/bash"]
 CMD "/pythonenv.sh"
 
 
-#RUN conda activate py379
-#RUN python --version
-#COPY test.sh /test.sh
-#CMD ["test.sh"]
 

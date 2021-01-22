@@ -24,5 +24,7 @@
         }
     },
     "pychrono_dir":"/pychronoExp",
-    "save_dir":"/data/sim"
+    "save_dir":"/data/sim/trial",
+    "agent_path":"/data/sim/agent"
+
 }
