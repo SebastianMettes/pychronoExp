@@ -1,6 +1,6 @@
 import os
-import torch
 import json
+from neural_network.agent import cross_entropy
 
 class agent():
     def __init__(self,agent_path):
