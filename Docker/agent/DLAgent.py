@@ -1,20 +1,22 @@
 import os
 import torch
+import json
 
 class agent():
-    def __init__(self):
+    def __init__(self,agent_path):
+        self.agent_path = agent_path
         pass
 
     def calc_action(self,agent_version,state):
-        #Will need to receive complete state data (state)
-        #receive agent ID value for Deep Network weights
-        #check for updates
+        #Pull weights for network
+        with open(os.path.join(self.agent_path,str(agent_version),"weights.json"),"r") as file:
+            weights=json.load(file)
 
         return [1,1] #return action
 
-    def update_version(self,agent_path):#determine most recent agent release folder 
+    def update_version(self):#determine most recent agent release folder 
         i = 1
-        while os.path.isdir(os.path.join(agent_path,str(i))):
+        while os.path.isdir(os.path.join(self.agent_path,str(i))):
             i+=1
         i -=1 
         return(i)

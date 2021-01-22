@@ -35,14 +35,21 @@ environmentTest = env.Multi_armEnv()
 environmentTest.reset(False,True,config['dimensions']['arm_width'],config['dimensions']['arm_height'],arm_length,arm_length,steel,config['step_size'],config['max_torque'],[1.0,1.0])
 
 #Create agent object
-action_agent = agent()
+action_agent = agent(config['agent_path'])
 
 
 while True:
-    #check for new weights
-    agent_version = action_agent.update_version(config["agent_path"])
 
-    state_tensor = [] #initialize an empty state tensor
+    #get the time as part of the unique output data file.
+    now = datetime.now()
+    date_time = now.strftime("%Y%m%d%H%M%S")
+
+    #check for new agent version:
+    agent_version = action_agent.update_version()
+
+    #create the filename, path, for the output data file
+    filename = str(host_id)+"."+date_time+".JSON"
+    filename = os.path.join(config["save_dir"],str(agent_version),filename)
 
     #set the target from random coordinates:
     target_angle = (random.random()*2*math.pi)
@@ -50,18 +57,12 @@ while True:
     target = [target_radius*math.sin(target_angle),target_radius*math.cos(target_angle)]
 
     #reset the environment to starting state
-    environmentTest.reset(False,True,0.2,0.125,1.0,1.0,pla,0.001,1,target)
+    environmentTest.reset(False,True,0.2,0.125,1.0,1.0,pla,0.001,1,target)    
 
     #get initial state 
     state = environmentTest.getstate()
 
-    #get the time as part of the unique output data file.
-    now = datetime.now()
-    date_time = now.strftime("%Y%m%d%H%M%S")
-
-    #create the filename, path, for the output data file
-    filename = str(host_id)+"."+date_time+".JSON"
-    filename = os.path.join(config["save_dir"],str(agent_version),filename)
+    state_tensor = [] #initialize an empty state tensor
 
     #conduct simulation
     for i in range(numSteps):
