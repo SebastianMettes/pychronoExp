@@ -30,6 +30,11 @@ RUN mkdir /data/sim/trial
 RUN mkdir '/data/sim/trial/1'
 RUN mkdir /data/sim/agent
 RUN mkdir '/data/sim/agent/1'
+
+RUN touch '/data/sim/agent/1/weights.json'
+RUN echo '[1]' >> '/data/sim/agent/1/weights.json'
+
+
 COPY config.json /data/sim/config.json
 CMD "/pythonenv.sh"
 
