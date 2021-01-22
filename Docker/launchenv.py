@@ -1,5 +1,5 @@
 from gym_multiarm.envs import multi_arm_env as env
-from agent.DLAgent import agent
+from gym_multiarm.agent.DLAgent import agent
 from datetime import datetime
 import random
 import math
@@ -9,7 +9,11 @@ import numpy as np
 import json
 import os
 import uuid
+#notes:
+'''
+To launch the agent,the config file must include all environment and agent parameters.
 
+'''
 
 ##Create a unique ID for host computer
 host_id = uuid.uuid4()
@@ -35,7 +39,7 @@ environmentTest = env.Multi_armEnv()
 environmentTest.reset(False,True,config['dimensions']['arm_width'],config['dimensions']['arm_height'],arm_length,arm_length,steel,config['step_size'],config['max_torque'],[1.0,1.0])
 
 #Create agent object
-action_agent = agent(config['agent_path'])
+action_agent = agent(config)
 
 
 while True:
