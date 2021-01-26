@@ -4,4 +4,4 @@ echo Hello
 python --version
 #python -c "print('hello world')"
 #python -c "conda activate 379"
-python "/pychronoExp/Docker/launchenv.py"
+python "/pychronoExp/Docker/node_env_launch.py"

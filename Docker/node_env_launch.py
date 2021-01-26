@@ -1,5 +1,5 @@
 from gym_multiarm.envs import multi_arm_env as env
-from gym_multiarm.agent.DLAgent import agent
+from gym_multiarm.agent.nodeAgent import agent
 from datetime import datetime
 import random
 import math
@@ -41,7 +41,29 @@ environmentTest.reset(False,True,config['dimensions']['arm_width'],config['dimen
 #Create agent object
 action_agent = agent(config)
 
-
+#Modules:
+def convert_action(action): #convert 0-7 to [motorA,motorB]
+    if action == 0:
+        action = [0,0]
+    elif action == 1:
+        action = [1,0]
+    elif action == 2:
+        action = [0,1]
+    elif action == 3:
+        action = [1,1]
+    elif action == 4:
+        action = [-1,0]
+    elif action == 5:
+        action = [0,-1]
+    elif action == 6:
+        action = [-1,-1]
+    elif action == 7:
+        action = [-1,1]
+    elif action == 8:
+        action = [1,-1]
+    else:
+        print('action state rror')
+    
 while True:
 
     #get the time as part of the unique output data file.
@@ -72,6 +94,7 @@ while True:
     for i in range(numSteps):
         #environmentTest.render() #not applicable to slave machines.
         action = action_agent.calc_action(agent_version,state_tensor) #use agent to determine action from current state and agent version
+        action = convert_action(action)
         state,state_new,action = environmentTest.forwardStep([action[0],action[1]]) #run simulation
         reward = environmentTest.reward() #calculate reward
         state_tensor.append((state,state_new,action,reward)) #append information to state_tensor

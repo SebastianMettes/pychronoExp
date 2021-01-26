@@ -28,7 +28,7 @@
     "agent_path":"/data/sim/agent",
     "HIDDEN_SIZE":128,
     "OBSERVE_SIZE":20,
-    "N_ACTIONS":7,
+    "N_ACTIONS":9,
     "BATCH_SIZE":1000,
     "PERCENTILE":70
 

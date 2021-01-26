@@ -1,6 +1,9 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import torch.optim as optim
+from gym_multiarm.neural_network.network import cross_entropy_agent
+import os
 
 
 
@@ -19,14 +22,20 @@ class cross_entropy_agent(nn.Module):
             nn.Linear(hidden_size,hidden_size),
             nn.ReLU(hidden_size),
             nn.Linear(hidden_size,n_actions)
-            
-
         )
+
     def forward(self, x):
         return self.Net(x)
 
     def load_model(self,version_path):
-        self.load_state_dict(torch.load(version_path))
+        self.Net.load_state_dict(torch.load(version_path))
+
+    def save_model(self,version_path):
+        if os.path.isdir(version_path) == False:
+            os.mkdir(version_path, mode = 0o777)
+        torch.save(self.net.state_dict(),version_path)
+
+
 
     
 
