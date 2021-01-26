@@ -63,6 +63,7 @@ def convert_action(action): #convert 0-7 to [motorA,motorB]
         action = [1,-1]
     else:
         print('action state rror')
+    return(action)
     
 while True:
 
@@ -93,11 +94,11 @@ while True:
     #conduct simulation
     for i in range(numSteps):
         #environmentTest.render() #not applicable to slave machines.
-        action = action_agent.calc_action(agent_version,state_tensor) #use agent to determine action from current state and agent version
-        action = convert_action(action)
+        action_digit = action_agent.calc_action(agent_version,state_tensor) #use agent to determine action from current state and agent version
+        action = convert_action(action_digit)
         state,state_new,action = environmentTest.forwardStep([action[0],action[1]]) #run simulation
         reward = environmentTest.reward() #calculate reward
-        state_tensor.append((state,state_new,action,reward)) #append information to state_tensor
+        state_tensor.append((state,state_new,action_digit,reward)) #append information to state_tensor
     
     with open(filename,"w") as file:
         file.write(json.dumps(state_tensor,indent=0)) #save state_tensor for agent optimization

@@ -29,7 +29,9 @@
     "HIDDEN_SIZE":128,
     "OBSERVE_SIZE":20,
     "N_ACTIONS":9,
-    "BATCH_SIZE":1000,
-    "PERCENTILE":70
+    "BATCH_SIZE":3000,
+    "PERCENTILE":70,
+    "learning_rate":0.01
+    
 
 }
