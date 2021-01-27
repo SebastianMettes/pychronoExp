@@ -76,7 +76,7 @@ agent_version = 1
 filepath,trialpath = update_agent_filepath(config,agent_version)
 
 action_agent.net.save_model(filepath)
-
+action_agent.cuda()
 
     
 while True:
@@ -94,8 +94,8 @@ while True:
         
     #optimize:
         obs_v, act_v, _ = zip(*optimal_tensor)
-        obs_v = torch.stack(obs_v).reshape((-1,20)) #Reshape the tensor to [B, 20]
-        act_v = torch.stack(act_v).reshape((-1))
+        obs_v = torch.stack(obs_v).reshape((-1,20)).cuda() #Reshape the tensor to [B, 20]
+        act_v = torch.stack(act_v).reshape((-1)).cuda()
 
         optimizer.zero_grad()
         action_scores_v = action_agent.net(obs_v)

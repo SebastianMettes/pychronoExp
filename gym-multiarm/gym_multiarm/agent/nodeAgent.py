@@ -19,6 +19,12 @@ class agent():
         if os.path.isfile(os.path.join(self.agent_path,str(1),'model.pt')):
             self.update_version()
 
+    def cuda(self):
+        self.net = self.net.cuda()
+
+    def cpu(self):
+        self.net = self.net.cpu()
+        
     def calc_action(self,agent_version,state):
         #check that version is the most recent OR requested version
         if self.version != agent_version:
