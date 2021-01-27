@@ -34,7 +34,7 @@ class cross_entropy_agent(nn.Module):
 
     def save_model(self,directory_path):
         tmp_name = directory_path+'_tmp'
-        if os.path.isdir(tmp_name) == False:
+        if os.path.isdir(directory_path) == False:
             os.mkdir(tmp_name, mode = 0o777)
         torch.save(self.Net.state_dict(),os.path.join(tmp_name,'model.pt'))
         shutil.move(tmp_name,directory_path)
