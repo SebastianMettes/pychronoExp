@@ -14,7 +14,7 @@ class agent():
         self.BATCH_SIZE = agent_config['BATCH_SIZE']
         self.PERCENTILE = agent_config['PERCENTILE']    
         self.agent_path = agent_config['agent_path']
-
+        self.version = 1
         self.net = cross_entropy_agent(self.OBSERVE_SIZE,self.HIDDEN_SIZE,self.N_ACTIONS)
         if os.path.isfile(os.path.join(self.agent_path,str(1),'model.pt')):
             self.update_version()
@@ -33,15 +33,16 @@ class agent():
         
         return action #return action (should be a number between 0 and 8)
 
-    def update_version(self,version):#determine most recent agent release folder 
+    def update_version(self):#determine most recent agent release folder 
         i = 1
         while os.path.isdir(os.path.join(self.agent_path,str(i))):
             i+=1
         i -=1 
-        self.version = i
-        if i > version:
+        
+        if i > self.version:
             time.sleep(0.1)
             self.net.load_model(os.path.join(self.agent_path,str(i),'model.pt'))
+            self.version = i
         return(i)
 
 
