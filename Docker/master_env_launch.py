@@ -22,7 +22,11 @@ objective = nn.CrossEntropyLoss()
 optimizer = optim.Adam(params = action_agent.net.parameters(),lr = config['learning_rate'])
 sm = nn.Softmax(dim=1)
 
-
+#OUTPUT DATA ARRAY
+##Check if previous version exists:
+data = []
+#if os.path.isfile(os.path.join(config["agent_path"],'data.csv')) == True:
+    #data = np.loadtxt(os.path.join(config["agent_path"],'data.csv'),  delimiter=",")
 
 #modules:
 def update_agent_filepath(config,agent_version):
@@ -60,8 +64,9 @@ def optimal_state_tensor(config,file_list,agent_version):
     reward_cutoff = np.percentile(rewards,config["PERCENTILE"],overwrite_input=True)
     episodes = list(filter(lambda x: x[0] >= reward_cutoff,episodes))
     rewards, filtered_state_tensors = zip(*episodes)
-    print(np.mean(rewards))
-    return filtered_state_tensors
+    
+
+    return np.mean(rewards), filtered_state_tensors
 
 
     
@@ -84,7 +89,7 @@ while True:
         
     #import files into usable arrays.
 
-        optimal_tensor = optimal_state_tensor(config,file_list,agent_version)
+        mean,optimal_tensor = optimal_state_tensor(config,file_list,agent_version)
         
     #optimize:
         obs_v, act_v, _ = zip(*optimal_tensor)
@@ -94,10 +99,9 @@ while True:
         optimizer.zero_grad()
         action_scores_v = action_agent.net(obs_v)
         loss_v = objective(action_scores_v,act_v)
-        print(loss_v)
         loss_v.backward()
         optimizer.step()
-        print(f"successfully optimized {agent_version+1}")
+        #print(f"successfully optimized {agent_version+1}")
 
 
         agent_version = agent_version + 1
@@ -105,6 +109,11 @@ while True:
         action_agent.net.save_model(filepath)
 
 
+        data.append((agent_version,mean,loss_v.item()))
+        print(agent_version,mean, loss_v.item())
+        data_array = np.array(data)
+        np.savetxt(os.path.join(config['agent_path'],'data.csv'), data_array, delimiter=",")
+        
 
  
 
