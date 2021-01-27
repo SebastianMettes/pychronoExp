@@ -72,7 +72,7 @@ while True:
     date_time = now.strftime("%Y%m%d%H%M%S")
 
     #check for new agent version:
-    agent_version = action_agent.update_version()
+    agent_version = action_agent.update_version(agent_version)
 
     #create the filename, path, for the output data file
     filename = str(host_id)+"."+date_time+".JSON"

@@ -4,6 +4,7 @@ from gym_multiarm.neural_network.network import cross_entropy_agent
 import torch
 import torch.nn as nn
 import numpy as np
+import time
 class agent():
     def __init__(self,agent_config):
         self.agent_config = agent_config
@@ -32,13 +33,15 @@ class agent():
         
         return action #return action (should be a number between 0 and 8)
 
-    def update_version(self):#determine most recent agent release folder 
+    def update_version(self,version):#determine most recent agent release folder 
         i = 1
         while os.path.isdir(os.path.join(self.agent_path,str(i))):
             i+=1
         i -=1 
         self.version = i
-        self.net.load_model(os.path.join(self.agent_path,str(i),'model.pt'))
+        if i > version:
+            time.sleep(0.1)
+            self.net.load_model(os.path.join(self.agent_path,str(i),'model.pt'))
         return(i)
 
 
