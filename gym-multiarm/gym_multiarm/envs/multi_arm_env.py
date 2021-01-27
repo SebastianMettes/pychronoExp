@@ -48,6 +48,7 @@ class Multi_armEnv(gym.Env):
         motor2Vel = self.arm2.motor.GetMotorRot_dt()
 
         self.state_new = [arm1Pos.x,arm1Pos.y,arm1Vel.x,arm1Vel.y,arm1Acc.x,arm1Acc.y,arm2Pos.x,arm2Pos.y,arm2Vel.x,arm2Vel.y,arm2Acc.x,arm2Acc.y,motor1Pos,motor1Vel,self.mtorque[0],motor2Pos,motor2Vel,self.mtorque[1],self.target[0],self.target[1]]
+        return self.state_new
         
     def reset(self,saveoutput,headless,crossx,crossy,length1,length2,material,timestep,maxtorque,target):
         #Check input information:

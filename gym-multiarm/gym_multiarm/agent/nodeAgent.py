@@ -26,11 +26,11 @@ class agent():
 
         #calculate action probabilities
         action_probability = self.net.forward(torch.FloatTensor([state]))
-        action_probability = nn.Softmax(action_probability)
+        action_probability = nn.functional.softmax(action_probability,dim=1)
         action_probability = action_probability.data.numpy()[0]
         action = np.random.choice(len(action_probability),p=action_probability)
         
-        return [action] #return action (should be a number between 0 and 8)
+        return action #return action (should be a number between 0 and 8)
 
     def update_version(self):#determine most recent agent release folder 
         i = 1

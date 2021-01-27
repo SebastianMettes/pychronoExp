@@ -62,7 +62,7 @@ def convert_action(action): #convert 0-7 to [motorA,motorB]
     elif action == 8:
         action = [1,-1]
     else:
-        print('action state rror')
+        print('action state error')
     return(action)
     
 while True:
@@ -87,14 +87,14 @@ while True:
     environmentTest.reset(False,True,0.2,0.125,1.0,1.0,pla,0.001,1,target)    
 
     #get initial state 
-    state = environmentTest.getstate()
+    state_new = environmentTest.getstate()
 
     state_tensor = [] #initialize an empty state tensor
 
     #conduct simulation
     for i in range(numSteps):
         #environmentTest.render() #not applicable to slave machines.
-        action_digit = action_agent.calc_action(agent_version,state_tensor) #use agent to determine action from current state and agent version
+        action_digit = action_agent.calc_action(agent_version,state_new) #use agent to determine action from current state and agent version
         action = convert_action(action_digit)
         state,state_new,action = environmentTest.forwardStep([action[0],action[1]]) #run simulation
         reward = environmentTest.reward() #calculate reward

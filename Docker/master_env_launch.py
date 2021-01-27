@@ -10,7 +10,7 @@ import time
 import numpy as np
 
 ##Create a unique ID for host computer
-host_id = uuid.uuid4()
+
 
 ##load config.json  
 with open("/data/sim/config.json","r") as file:
@@ -18,48 +18,57 @@ with open("/data/sim/config.json","r") as file:
 
 #Create agent object and related components
 action_agent = agent(config)
-objective = nn.CrossEntropyLoss
+objective = nn.CrossEntropyLoss()
 optimizer = optim.Adam(params = action_agent.net.parameters(),lr = config['learning_rate'])
 sm = nn.Softmax(dim=1)
 
-#save initialized weights as version 1
-agent_version = 1
-filepath = os.path.join(config["agent_path"],str(agent_version))
-action_agent.net.save_model(filepath)
+
 
 #modules:
 def update_agent_filepath(config,agent_version):
     filepath = os.path.join(config["agent_path"],str(agent_version))
-    return(filepath)
+    
+    trialpath = os.path.join(config["save_dir"],str(agent_version))
+    if os.path.isdir(trialpath) == False:
+        os.mkdir(trialpath)
+    return(filepath,trialpath)
 
 def optimal_state_tensor(config,file_list,agent_version):
     episodes = []
+
     for i in range(0,len(file_list)):
-        with open(os.path.join(config['agent_path'],str(agent_version),file_list[i])) as file:
+        #print(os.path.join(config['save_dir'],str(agent_version),file_list[i]))
+        with open(os.path.join(config['save_dir'],str(agent_version),file_list[i])) as file:
             state_tensor = json.load(file)
             states, _, actions, rewards = zip(*state_tensor)
-            state_tensor = zip(
+            state_tensor = (
                 torch.FloatTensor(states),
-                torch.nn.functional.one_hot(torch.LongTensor(actions),config['N_ACTIONS']),
+                #torch.nn.functional.one_hot(torch.LongTensor(actions),config['N_ACTIONS']),
+                torch.LongTensor(actions),
                 torch.FloatTensor(rewards)
                 )
+
             episodes.append((sum(rewards),state_tensor))
 
     #Episodes is a list of the following form
     #[ (Er0,[(s0,a0,r0),(s1,a1,r1),...]), (Er1, [(s0,a0,r0)...])]
 
     #Filter episodes
-    rewards, _ = zip(*episodes)
-    reward_cutoff = np.percentile(rewards,config["PERCENTILE"],overwrite_input=True)
 
+    rewards, _ = zip(*episodes)
+    print(np.mean(rewards))
+    reward_cutoff = np.percentile(rewards,config["PERCENTILE"],overwrite_input=True)
     episodes = list(filter(lambda x: x[0] >= reward_cutoff,episodes))
     _, filtered_state_tensors = zip(*episodes)
-
     return filtered_state_tensors
 
 
     
+#save initialized weights as version 1
+agent_version = 1
+filepath,trialpath = update_agent_filepath(config,agent_version)
 
+action_agent.net.save_model(filepath)
 
 
     
@@ -67,35 +76,34 @@ while True:
     while True:
     #Continuously check for new json files with complete state tensors for each episode
         #create an array of filenames
-        file_list = [name for name in os.listdir(filepath) if os.path.isfile(os.path.join(filepath,name))]
-        time.sleep(5)
-        if len(file_list) >= config['BATCH_SIZE']:
-            break
+        file_list = [name for name in os.listdir(trialpath) if os.path.isfile(os.path.join(trialpath,name))]
+        time.sleep(1)
+        if len(file_list) < config['BATCH_SIZE']:
+            continue
         
     #import files into usable arrays.
+
         optimal_tensor = optimal_state_tensor(config,file_list,agent_version)
-    
+        
     #optimize:
         obs_v, act_v, _ = zip(*optimal_tensor)
-        obs_v = torch.stack(obs_v)
-        act_v = torch.stack(act_v)
+        obs_v = torch.stack(obs_v).reshape((-1,20)) #Reshape the tensor to [B, 20]
+        act_v = torch.stack(act_v).reshape((-1))
 
         optimizer.zero_grad()
-        action_scores_v = action_agent(obs_v)
-        loss_v = objective(action_scores_v,acts_v)
+        action_scores_v = action_agent.net(obs_v)
+        loss_v = objective(action_scores_v,act_v)
+        print(loss_v)
         loss_v.backward()
         optimizer.step()
-        print('successfully optimized %d',agent_version+1)
+        print(f"successfully optimized {agent_version+1}")
+
+
+        agent_version = agent_version + 1
+        filepath,trialpath = update_agent_filepath(config,agent_version)
+        action_agent.net.save_model(filepath)
 
 
 
  
-        
 
-
-    #Save the optimized weights in a new directory
-    agent_version = agent_version+=1
-    filepath = update_agent_filepath(config,agent_version)
-    action_agent.net.save_model(filepath)
-
-    #Save the agent optimization config file (in case of crash)

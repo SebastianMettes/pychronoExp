@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
-from gym_multiarm.neural_network.network import cross_entropy_agent
+
 
 import os
 
@@ -21,7 +21,7 @@ class cross_entropy_agent(nn.Module):
             nn.Linear(hidden_size,hidden_size),
             nn.ReLU(),
             nn.Linear(hidden_size,hidden_size),
-            nn.ReLU(hidden_size),
+            nn.ReLU(),
             nn.Linear(hidden_size,n_actions)
         )
 
@@ -34,7 +34,7 @@ class cross_entropy_agent(nn.Module):
     def save_model(self,directory_path):
         if os.path.isdir(directory_path) == False:
             os.mkdir(directory_path, mode = 0o777)
-        torch.save(self.net.state_dict(),os.path.join(directory_path,'model.pt'))
+        torch.save(self.Net.state_dict(),os.path.join(directory_path,'model.pt'))
 
 
 
