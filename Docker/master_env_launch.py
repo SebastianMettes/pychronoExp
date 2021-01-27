@@ -34,7 +34,7 @@ def update_agent_filepath(config,agent_version):
     
     trialpath = os.path.join(config["save_dir"],str(agent_version))
     if os.path.isdir(trialpath) == False:
-        os.mkdir(trialpath)
+        os.mkdir(trialpath,mode=0o777)
     return(filepath,trialpath)
 
 def optimal_state_tensor(config,file_list,agent_version):

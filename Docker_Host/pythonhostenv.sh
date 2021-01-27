@@ -4,4 +4,7 @@ echo Hello
 python --version
 #python -c "print('hello world')"
 #python -c "conda activate 379"
+cd /pychronoExp
+git pull
+cd /
 python "/pychronoExp/Docker/master_env_launch.py"
