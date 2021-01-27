@@ -21,7 +21,7 @@ COPY environment.yml /environment.yml
 SHELL ["/root/miniconda/bin/conda", "run", "-n", "base", "/bin/bash", "-c"]
 RUN conda env create -f environment.yml
 
-SHELL ["/root/miniconda/bin/conda", "run", "-n", "379", "/bin/bash", "-c"]
+SHELL ["/root/miniconda/bin/conda", "run", "-n", "379h", "/bin/bash", "-c"]
 RUN pip install -e /pychronoExp/gym-multiarm
 COPY pythonhostenv.sh /pythonhostenv.sh
 RUN mkdir /data
