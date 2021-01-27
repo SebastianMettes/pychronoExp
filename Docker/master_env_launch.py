@@ -56,10 +56,11 @@ def optimal_state_tensor(config,file_list,agent_version):
     #Filter episodes
 
     rewards, _ = zip(*episodes)
-    print(np.mean(rewards))
+    
     reward_cutoff = np.percentile(rewards,config["PERCENTILE"],overwrite_input=True)
     episodes = list(filter(lambda x: x[0] >= reward_cutoff,episodes))
-    _, filtered_state_tensors = zip(*episodes)
+    rewards, filtered_state_tensors = zip(*episodes)
+    print(np.mean(rewards))
     return filtered_state_tensors
 
 

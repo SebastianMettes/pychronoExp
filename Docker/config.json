@@ -18,9 +18,9 @@
         },
         "pla":
         {
-            "E":2.3E7,
+            "E":2.3E11,
             "poisson":0.5,
-            "density":1240
+            "density":600
         }
     },
     "pychrono_dir":"/pychronoExp",
@@ -29,7 +29,7 @@
     "HIDDEN_SIZE":128,
     "OBSERVE_SIZE":20,
     "N_ACTIONS":9,
-    "BATCH_SIZE":3000,
+    "BATCH_SIZE":30,
     "PERCENTILE":70,
     "learning_rate":0.01
     
