@@ -36,8 +36,8 @@ class cross_entropy_agent(nn.Module):
         tmp_name = directory_path+'_tmp'
         if os.path.isdir(directory_path) == False:
             os.mkdir(tmp_name, mode = 0o777)
-        torch.save(self.Net.state_dict(),os.path.join(tmp_name,'model.pt'))
-        shutil.move(tmp_name,directory_path)
+            torch.save(self.Net.state_dict(),os.path.join(tmp_name,'model.pt'))
+            shutil.move(tmp_name,directory_path)
 
 
 
