@@ -1,3 +1,4 @@
+import shutil
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -32,9 +33,11 @@ class cross_entropy_agent(nn.Module):
         self.Net.load_state_dict(torch.load(version_path))
 
     def save_model(self,directory_path):
-        if os.path.isdir(directory_path) == False:
-            os.mkdir(directory_path, mode = 0o777)
-        torch.save(self.Net.state_dict(),os.path.join(directory_path,'model.pt'))
+        tmp_name = directory_path+'_tmp'
+        if os.path.isdir(tmp_name) == False:
+            os.mkdir(tmp_name, mode = 0o777)
+        torch.save(self.Net.state_dict(),os.path.join(tmp_name,'model.pt'))
+        shutil.move(tmp_name,directory_path)
 
 
 
