@@ -18,7 +18,6 @@ dependencies:
   - certifi=2020.12.5=py37h06a4308_0
   - cffi=1.14.3=py37h261ae71_2
   - click=7.1.2=py_0
-  - cpuonly=1.0=0
   - cudatoolkit=11.0.221=h6bb024c_0
   - cycler=0.10.0=py37_0
   - dbus=1.13.18=hb2f20db_0
