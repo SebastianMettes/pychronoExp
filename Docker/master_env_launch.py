@@ -87,6 +87,7 @@ while True:
         time.sleep(1)
         if len(file_list) < config['BATCH_SIZE']:
             continue
+        print(agent_version)
         
     #import files into usable arrays.
 
@@ -107,11 +108,13 @@ while True:
 
         agent_version = agent_version + 1
         filepath,trialpath = update_agent_filepath(config,agent_version)
+        action_agent.cpu()
         action_agent.net.save_model(filepath)
+        action_agent.cuda()
 
 
-        data.append((agent_version,mean,loss_v.item()))
-        print(agent_version,mean, loss_v.item())
+        data.append((agent_version,mean,loss_v.detach().cpu().item()))
+        print(agent_version,mean, loss_v.detach().cpu().item())
         data_array = np.array(data)
         np.savetxt(os.path.join(config['agent_path'],'data.csv'), data_array, delimiter=",")
         
