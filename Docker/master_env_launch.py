@@ -94,6 +94,7 @@ while True:
 
         mean,optimal_tensor = optimal_state_tensor(config,file_list,agent_version)
         t = len(optimal_tensor)/batch_size
+        loss_store = []
 
         for i in range(0,int(t)):
             optimal_tensor_batch = optimal_tensor[batch_size*i:(batch_size*(2*i))-1]
@@ -102,8 +103,13 @@ while True:
             obs_v = torch.stack(obs_v).reshape((-1,20)).cuda() #Reshape the tensor to [B, 20]
             act_v = torch.stack(act_v).reshape((-1)).cuda()
             optimizer.zero_grad()
+            action_scores_v = action_agent.net(obs_v)
+            loss_v = objective(action_scores_v,act_v)
+            loss_v.backward()
+            optimizer.step()
+            loss_store.append((loss_v.detach().cpu().item())) 
+        
         optimal_tensor_batch = optimal_tensor[batch_size*int(t):]
-
         #optimize remaining:
         obs_v, act_v, _ = zip(*optimal_tensor)
         obs_v = torch.stack(obs_v).reshape((-1,20)).cuda() #Reshape the tensor to [B, 20]
@@ -123,10 +129,11 @@ while True:
         action_agent.cpu()
         action_agent.net.save_model(filepath)
         action_agent.cuda()
+        loss_mean = np.mean(loss_store)
 
 
-        data.append((agent_version,mean,loss_v.detach().cpu().item()))
-        print(agent_version,mean, loss_v.detach().cpu().item())
+        data.append((agent_version,mean,loss_mean))
+        print(agent_version,mean, loss_mean)
         data_array = np.array(data)
         np.savetxt(os.path.join(config['agent_path'],'data.csv'), data_array, delimiter=",")
         
