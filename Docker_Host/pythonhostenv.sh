@@ -7,4 +7,4 @@ python --version
 cd /pychronoExp
 git pull
 cd /
-python "/pychronoExp/Docker/master_env_launch.py"
+python -u "/pychronoExp/Docker/master_env_launch.py"
