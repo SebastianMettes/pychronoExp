@@ -109,18 +109,18 @@ while True:
             optimizer.step()
             loss_store.append((loss_v.detach().cpu().item())) 
         
-        optimal_tensor_batch = optimal_tensor[batch_size*int(t):]
+        #optimal_tensor_batch = optimal_tensor[batch_size*int(t):]
         #optimize remaining:
-        obs_v, act_v, _ = zip(*optimal_tensor)
-        obs_v = torch.stack(obs_v).reshape((-1,20)).cuda() #Reshape the tensor to [B, 20]
-        act_v = torch.stack(act_v).reshape((-1)).cuda()
-        optimizer.zero_grad()
+        #obs_v, act_v, _ = zip(*optimal_tensor)
+        #obs_v = torch.stack(obs_v).reshape((-1,20)).cuda() #Reshape the tensor to [B, 20]
+        #act_v = torch.stack(act_v).reshape((-1)).cuda()
+        #optimizer.zero_grad()
 
         #backwards
-        action_scores_v = action_agent.net(obs_v)
-        loss_v = objective(action_scores_v,act_v)
-        loss_v.backward()
-        optimizer.step()
+        #action_scores_v = action_agent.net(obs_v)
+        #loss_v = objective(action_scores_v,act_v)
+        #loss_v.backward()
+        #optimizer.step()
         #print(f"successfully optimized {agent_version+1}")
 
 
@@ -136,7 +136,3 @@ while True:
         print(agent_version,mean, loss_mean)
         data_array = np.array(data)
         np.savetxt(os.path.join(config['agent_path'],'data.csv'), data_array, delimiter=",")
-        
-
- 
-

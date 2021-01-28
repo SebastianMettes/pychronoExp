@@ -3,4 +3,14 @@ import numpy as np
 
 
 
-#Select 
+#Select agent 
+
+#select episodes
+
+#pull in episode file
+
+#extract x,y coordinate data
+
+#graph coordinate date
+
+#
