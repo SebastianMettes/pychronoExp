@@ -79,60 +79,68 @@ filepath,trialpath = update_agent_filepath(config,agent_version)
 action_agent.net.save_model(filepath)
 action_agent.cuda()
 
-    
+print("I'm here now...")    
+
 while True:
-    while True:
-    #Continuously check for new json files with complete state tensors for each episode
-        #create an array of filenames
-        file_list = [name for name in os.listdir(trialpath) if os.path.isfile(os.path.join(trialpath,name))]
-        time.sleep(1)
-        if len(file_list) < config['BATCH_SIZE']:
-            continue
-        print(agent_version)
-        
-    #import files into usable arrays.
+#Continuously check for new json files with complete state tensors for each episode
+    #create an array of filenames
+    file_list = [name for name in os.listdir(trialpath) if os.path.isfile(os.path.join(trialpath,name))]
+    time.sleep(1)
+    if len(file_list) < config['BATCH_SIZE']:
+        continue
+    print(agent_version)
+    
+#import files into usable arrays.
 
-        mean,optimal_tensor = optimal_state_tensor(config,file_list,agent_version)
-        t = len(optimal_tensor)/batch_size
-        loss_store = []
+    mean,optimal_tensor = optimal_state_tensor(config,file_list,agent_version)
+    
+    if len(optimal_tensor) < batch_size:
+        raise ValueError("Tensor Size was less than batch size! -- ")
+    
+    t = len(optimal_tensor)/batch_size
 
-        for i in range(0,int(t)):
-            optimal_tensor_batch = optimal_tensor[batch_size*i:(batch_size*(2*i))-1]
-            #optimize:
-            obs_v, act_v, _ = zip(*optimal_tensor)
-            obs_v = torch.stack(obs_v).reshape((-1,20)).cuda() #Reshape the tensor to [B, 20]
-            act_v = torch.stack(act_v).reshape((-1)).cuda()
-            optimizer.zero_grad()
-            action_scores_v = action_agent.net(obs_v)
-            loss_v = objective(action_scores_v,act_v)
-            loss_v.backward()
-            optimizer.step()
-            loss_store.append((loss_v.detach().cpu().item())) 
-        
-        #optimal_tensor_batch = optimal_tensor[batch_size*int(t):]
-        #optimize remaining:
-        #obs_v, act_v, _ = zip(*optimal_tensor)
-        #obs_v = torch.stack(obs_v).reshape((-1,20)).cuda() #Reshape the tensor to [B, 20]
-        #act_v = torch.stack(act_v).reshape((-1)).cuda()
-        #optimizer.zero_grad()
+    loss_store = []
 
-        #backwards
-        #action_scores_v = action_agent.net(obs_v)
-        #loss_v = objective(action_scores_v,act_v)
-        #loss_v.backward()
-        #optimizer.step()
-        #print(f"successfully optimized {agent_version+1}")
+    print("And now here...")
+    for i in range(0,int(t)):
+        print("Running a batch")
+        optimal_tensor_batch = optimal_tensor[batch_size*i:(batch_size*(i+1) - 1)]
+        #optimize:
+        obs_v, act_v, _ = zip(*optimal_tensor_batch)
+        obs_v = torch.stack(obs_v).reshape((-1,20)).cuda() #Reshape the tensor to [B, 20]
+        act_v = torch.stack(act_v).reshape((-1)).cuda()
+        optimizer.zero_grad()
+        action_scores_v = action_agent.net(obs_v)
+        loss_v = objective(action_scores_v,act_v)
+        loss_v.backward()
+        optimizer.step()
+        loss_store.append(loss_v.detach().cpu().item()) 
+        #print(loss_store)
+    
+    #optimal_tensor_batch = optimal_tensor[batch_size*int(t):]
+    #optimize remaining:
+    #obs_v, act_v, _ = zip(*optimal_tensor)
+    #obs_v = torch.stack(obs_v).reshape((-1,20)).cuda() #Reshape the tensor to [B, 20]
+    #act_v = torch.stack(act_v).reshape((-1)).cuda()
+    #optimizer.zero_grad()
 
-
-        agent_version = agent_version + 1
-        filepath,trialpath = update_agent_filepath(config,agent_version)
-        action_agent.cpu()
-        action_agent.net.save_model(filepath)
-        action_agent.cuda()
-        loss_mean = np.mean(loss_store)
+    #backwards
+    #action_scores_v = action_agent.net(obs_v)
+    #loss_v = objective(action_scores_v,act_v)
+    #loss_v.backward()
+    #optimizer.step()
+    #print(f"successfully optimized {agent_version+1}")
 
 
-        data.append((agent_version,mean,loss_mean))
-        print(agent_version,mean, loss_mean)
-        data_array = np.array(data)
-        np.savetxt(os.path.join(config['agent_path'],'data.csv'), data_array, delimiter=",")
+    agent_version = agent_version + 1
+    filepath,trialpath = update_agent_filepath(config,agent_version)
+    action_agent.cpu()
+    action_agent.net.save_model(filepath)
+    action_agent.cuda()
+    loss_mean = np.mean(loss_store)
+
+
+    data.append((agent_version,mean,loss_mean))
+    print(agent_version,mean, loss_mean)
+    data_array = np.array(data)
+    np.savetxt(os.path.join(config['agent_path'],'data.csv'), data_array, delimiter=",")
