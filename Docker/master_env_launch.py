@@ -16,6 +16,8 @@ import numpy as np
 with open("/data/sim/config.json","r") as file:
     config=json.load(file)
 
+batch_size = config["gpu_batch_size"]
+
 #Create agent object and related components
 action_agent = agent(config)
 objective = nn.CrossEntropyLoss()
@@ -48,7 +50,6 @@ def optimal_state_tensor(config,file_list,agent_version):
             states, _, actions, rewards = zip(*state_tensor)
             state_tensor = (
                 torch.FloatTensor(states),
-                #torch.nn.functional.one_hot(torch.LongTensor(actions),config['N_ACTIONS']),
                 torch.LongTensor(actions),
                 torch.FloatTensor(rewards)
                 )
@@ -92,13 +93,24 @@ while True:
     #import files into usable arrays.
 
         mean,optimal_tensor = optimal_state_tensor(config,file_list,agent_version)
-        
-    #optimize:
+        t = len(optimal_tensor)/batch_size
+
+        for i in range(0,int(t)):
+            optimal_tensor_batch = optimal_tensor[batch_size*i:(batch_size*(2*i))-1]
+            #optimize:
+            obs_v, act_v, _ = zip(*optimal_tensor)
+            obs_v = torch.stack(obs_v).reshape((-1,20)).cuda() #Reshape the tensor to [B, 20]
+            act_v = torch.stack(act_v).reshape((-1)).cuda()
+            optimizer.zero_grad()
+        optimal_tensor_batch = optimal_tensor[batch_size*int(t):]
+
+        #optimize remaining:
         obs_v, act_v, _ = zip(*optimal_tensor)
         obs_v = torch.stack(obs_v).reshape((-1,20)).cuda() #Reshape the tensor to [B, 20]
         act_v = torch.stack(act_v).reshape((-1)).cuda()
-
         optimizer.zero_grad()
+
+        #backwards
         action_scores_v = action_agent.net(obs_v)
         loss_v = objective(action_scores_v,act_v)
         loss_v.backward()

@@ -31,7 +31,8 @@
     "N_ACTIONS":9,
     "BATCH_SIZE":30,
     "PERCENTILE":70,
-    "learning_rate":0.01
+    "learning_rate":0.01,
+    "gpu_batch_size":50
     
 
 }
