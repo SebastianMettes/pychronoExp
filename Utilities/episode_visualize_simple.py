@@ -35,10 +35,18 @@ for i in tqdm(range(len(episodes))):
     EpisodeX = []
     print(i)
     for j in range(0,config["num_steps"]):
-        posX = episodes[i][1][j][0]
-        posY = episodes[i][1][j][1]
+        posX = episodes[i][1][j][6]
+        posY = episodes[i][1][j][7]
         EpisodeX.append((posX,posY))
-    data.append((EpisodeX))
+    data.append(EpisodeX)
+
+plt_data = data[0]
+xcoords,ycoords = zip(*plt_data)
+
+plt.figure()
+plt.plot(xcoords,ycoords)
+plt.show()
+
 
 
 
