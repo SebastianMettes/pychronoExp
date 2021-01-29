@@ -1,15 +1,47 @@
-import matplotlib as plt
+import matplotlib.pyplot as plt
 import numpy as np
+import os
+import json
+from tqdm.auto import tqdm
 
 
+#Select agent of interest
+agent = 131
+episodes = []
 
-#Select agent 
+#import the config file
+with open("/data/sim/config.json","r") as file:
+    config=json.load(file)
 
-#select episodes
+#set location of data
+trialpath = os.path.join("/data/sim/trial",str(agent))
 
-#pull in episode file
+file_list = [name for name in os.listdir(trialpath) if os.path.isfile(os.path.join(trialpath,name))]
+#select episodes 
+for i in tqdm(range(0,len(file_list))):
+    with open(os.path.join(config['save_dir'],str(agent),file_list[i])) as file:
+        state_tensor = json.load(file)
+        states, _, actions, rewards = zip(*state_tensor)     
+        episodes.append((sum(rewards),states))  
 
+
+reward_cutoff = np.percentile(rewards,config["PERCENTILE"],overwrite_input=True)
+episodes = list(filter(lambda x: x[0] >= reward_cutoff,episodes))
+
+
+data = []
 #extract x,y coordinate data
+for i in tqdm(range(len(episodes))):
+    EpisodeX = []
+    print(i)
+    for j in range(0,config["num_steps"]):
+        posX = episodes[i][1][j][0]
+        posY = episodes[i][1][j][1]
+        EpisodeX.append((posX,posY))
+    data.append((EpisodeX))
+
+
+
 
 #graph coordinate date
 
