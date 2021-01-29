@@ -6,8 +6,11 @@ from tqdm.auto import tqdm
 
 
 #Select agent of interest
-agent = 131
+agent = 26
+episode_number = 10
 episodes = []
+episode_list = [0,10,15,18]
+num_steps = 10000
 
 #import the config file
 with open("/data/sim/config.json","r") as file:
@@ -24,9 +27,10 @@ for i in tqdm(range(0,len(file_list))):
         states, _, actions, rewards = zip(*state_tensor)     
         episodes.append((sum(rewards),states))  
 
-
+rewards, _ = zip(*episodes)
 reward_cutoff = np.percentile(rewards,config["PERCENTILE"],overwrite_input=True)
 episodes = list(filter(lambda x: x[0] >= reward_cutoff,episodes))
+episodes = sorted(episodes,key=lambda x: x[0])
 
 
 data = []
@@ -34,7 +38,7 @@ data = []
 for i in tqdm(range(len(episodes))):
     EpisodeX = []
     print(i)
-    for j in range(0,config["num_steps"]):
+    for j in range(0,num_steps):
         posX = episodes[i][1][j][6]
         posY = episodes[i][1][j][7]
         EpisodeX.append((posX,posY))
@@ -43,8 +47,15 @@ for i in tqdm(range(len(episodes))):
 plt_data = data[0]
 xcoords,ycoords = zip(*plt_data)
 
-plt.figure()
+fig,ax = plt.subplots()
+
+targetx = episodes[episode_number][int(1)][int(0)][int(18)]
+targety = episodes[episode_number][int(1)][int(0)][int(19)]
 plt.plot(xcoords,ycoords)
+plt.title(f"Episode {episode_number} -- Reward : {episodes[episode_number][0]}")
+circle1 = plt.Circle((targetx, targety), 0.01, color='r')
+ax.add_patch(circle1)
+
 plt.show()
 
 
