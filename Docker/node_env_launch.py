@@ -36,7 +36,7 @@ numSteps = config['num_steps']
 
 #Setup Environment object
 environmentTest = env.Multi_armEnv()
-environmentTest.reset(False,True,config['dimensions']['arm_width'],config['dimensions']['arm_height'],arm_length,arm_length,steel,config['step_size'],config['max_torque'],[1.0,1.0])
+environmentTest.reset(False,True,config['dimensions']['arm_width'],config['dimensions']['arm_height'],arm_length,arm_length,pla,config['step_size'],config['max_torque'],[1.0,1.0])
 
 #Create agent object
 action_agent = agent(config)
@@ -85,7 +85,8 @@ while True:
     target = [target_radius*math.sin(target_angle),target_radius*math.cos(target_angle)]
 
     #reset the environment to starting state
-    environmentTest.reset(False,True,0.2,0.125,1.0,1.0,pla,0.001,1,target)    
+    environmentTest.reset(False,True,config['dimensions']['arm_width'],config['dimensions']['arm_height'],arm_length,arm_length,pla,config['step_size'],config['max_torque'],target)
+  
 
     #get initial state 
     state_new = environmentTest.getstate()
@@ -95,7 +96,8 @@ while True:
     #conduct simulation
     for i in range(numSteps):
         #environmentTest.render() #not applicable to slave machines.
-        action_digit = action_agent.calc_action(agent_version,state_new) #use agent to determine action from current state and agent version
+        action_digit = action_agent.calc_action(5,state_new) #use agent to determine action from current state and agent version
+        print(action_digit)
         action = convert_action(action_digit)
         state,state_new,action = environmentTest.forwardStep([action[0],action[1]]) #run simulation
         reward = environmentTest.reward() #calculate reward
