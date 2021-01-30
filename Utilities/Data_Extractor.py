@@ -5,8 +5,9 @@ import json
 from tqdm.auto import tqdm
 
 
-agent_init = 20
-agent_final = 21
+agent_init = 1
+agent_final = 2
+folder = "random_starts"
 
 for i in range(agent_init,agent_final):
     agent = i
@@ -33,7 +34,7 @@ for i in range(agent_init,agent_final):
             episodes.append((sum(rewards),states_position))  
 
 
-    filename = os.path.join("/home/sebastian/Documents",str(agent)+".json")
+    filename = os.path.join("/home/sebastian/Documents",folder,str(agent)+".json")
     with open(filename,"w") as file:
         file.write(json.dumps(episodes,indent=0)) #save state_tensor for agent optimization
 
