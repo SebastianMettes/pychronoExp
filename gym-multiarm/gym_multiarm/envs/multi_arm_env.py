@@ -50,15 +50,19 @@ class Multi_armEnv(gym.Env):
         self.state_new = [arm1Pos.x,arm1Pos.z,arm1Vel.x,arm1Vel.z,arm1Acc.x,arm1Acc.z,arm2Pos.x,arm2Pos.z,arm2Vel.x,arm2Vel.z,arm2Acc.x,arm2Acc.z,motor1Pos,motor1Vel,self.mtorque[0],motor2Pos,motor2Vel,self.mtorque[1],self.target[0],self.target[1]]
         return self.state_new
         
-    def reset(self,saveoutput,headless,crossx,crossy,length1,length2,material,timestep,maxtorque,target):
+    def reset(self,saveoutput,headless,crossx,crossy,position1,position2,material,timestep,maxtorque,target):
+
+        if headless == False:
+            self.headless = False
+
         #Check input information:
         if len(target) != 2:
             print("Target is list of length 2, [x,y] coordinates")
             quit()
         self.target=target
         self.material = material
-        self.length1=length1
-        self.length2 = length2
+        #self.length1= length1
+        #self.length2 = length2
         self.crossx=crossx
         self.crossy=crossy
         self.saveoutput = saveoutput #Do you want to save all data outputs?
@@ -71,9 +75,9 @@ class Multi_armEnv(gym.Env):
         self.s1 = time.perf_counter()
         self.mtorque = [0,0] #set intial torque   
         self.maxtorque=abs(maxtorque)
-        self.arm1 = sim.Motor_arm(self.motor_system.system,False,self.material,self.crossx,self.crossy,(0,0,0),(0,0,self.length1),0.000,10) #create arm in simulation
-        self.arm2 = sim.Motor_arm(self.motor_system.system,False,self.material,self.crossx,self.crossy,(0,0,self.length1),(0,0,self.length1+self.length2),0.000,10,origin=False,stator_constraint=self.arm1.arm_tip)#create attached second arm
-        
+        self.arm1 = sim.Motor_arm(self.motor_system.system,False,self.material,self.crossx,self.crossy,(0,0,0),position1,0.000,10) #create arm in simulation
+        self.arm2 = sim.Motor_arm(self.motor_system.system,False,self.material,self.crossx,self.crossy,position1,position2,0.000,10,origin=False,stator_constraint=self.arm1.arm_tip)#create attached second arm
+
         self.getstate() 
         self.state = self.state_new
         self.target = np.array(target)
