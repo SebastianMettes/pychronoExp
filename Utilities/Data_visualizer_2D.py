@@ -6,9 +6,9 @@ from tqdm.auto import tqdm
 
 
 folder = 'random_starts'
-agent = 1
-episode_number = 38
-percentile = 70
+agent = 21
+episode_number = 72
+percentile = 0
 num_steps = 3000
 filename = os.path.join("/home/sebastian/Documents",folder,str(agent)+".json")
 
@@ -18,7 +18,7 @@ with open(filename,"r") as file:
 rewards, _ = zip(*episodes)
 print(rewards)
 reward_cutoff = np.percentile(rewards,percentile,overwrite_input=True)
-#episodes = list(filter(lambda x: x[0] >= reward_cutoff,episodes))
+episodes = list(filter(lambda x: x[0] >= reward_cutoff,episodes))
 episodes = sorted(episodes,key=lambda x: x[0])
 
 
@@ -58,10 +58,16 @@ targety = episodes[episode_number][int(1)][int(0)][int(5)]
 
 plt.plot(xcoords,ycoords)
 plt.plot(xcoords1,ycoords1)
+sx1,sy1 = xcoords[-1],ycoords[-1]
+sx0,sy0 = xcoords1[-1],ycoords1[-1]
+
 plt.xlim(-2,2)
 plt.ylim(-2,2)
-plt.title(f"Episode {episode_number} -- Reward : {episodes[episode_number][0]}")
+plt.plot([0,sx0],[0,sy0],label='arm1')
+plt.plot([sx0,sx1],[sy0,sy1],label='arm2')
+plt.title(f"Episode {episode_number} -- Reward : {episodes[episode_number][0]}\nTarget: [{targetx},{targety}]")
 circle1 = plt.Circle((targetx, targety), 0.01, color='r')
+plt.legend()
 ax.add_patch(circle1)
 
 plt.show()

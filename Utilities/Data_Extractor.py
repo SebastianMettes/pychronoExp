@@ -5,8 +5,8 @@ import json
 from tqdm.auto import tqdm
 
 
-agent_init = 1
-agent_final = 2
+agent_init = 21
+agent_final = 22
 folder = "random_starts"
 
 for i in range(agent_init,agent_final):
