@@ -89,16 +89,25 @@ while True:
     #note, the plane of operation is the X-Z Plane (X,y,Z)
     #position 1:
     pos1_angle = (random.random()*2*math.pi)
+    print("AL1:",arm_length)
     position1 = (arm_length*math.cos(pos1_angle),0,arm_length*math.sin(pos1_angle))
-        
+    print("Pos1: ", np.sqrt(np.sum(np.array(position1)**2)))    
+    print("Theta: ", pos1_angle)
     #position 2:
     pos2_angle = (random.random()*2*math.pi)
     position2 = (arm_length*math.cos(pos2_angle),0,arm_length*math.sin(pos2_angle))
-    position2 = (position1[0]+position2[0],0,position1[1]+position2[1])
+    print("Pos 2:", np.sqrt(np.sum(np.array(position2)**2)))
+    print("AL2:",arm_length)
+    print("Phi:",pos2_angle)
+    position2 = (position1[0]+position2[0],0,position1[2]+position2[2])
+
+    
+    
 
 
 
     #reset the environment to starting state
+    print("Second Reset")
     environmentTest.reset(False,False,config['dimensions']['arm_width'],config['dimensions']['arm_height'],position1,position2,pla,config['step_size'],config['max_torque'],target)
   
 

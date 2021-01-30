@@ -64,6 +64,10 @@ class Motor_arm():
 
         self.builder = fea.ChBuilderBeamEuler() #Use the beam builder assembly method to assembly each beam
         self.builder.BuildBeam(self.mesh,self.section,elements,self.position_base,self.position_tip,chrono.ChVectorD(0,1,0),)
+        import numpy as np
+        print("Pos1: ", position_base)
+        print("Pos 2: ", position_tip)
+        print("Length of Beam :", np.sqrt(np.sum((np.array(position_tip)-np.array(position_base))**2)))
 
    
 
