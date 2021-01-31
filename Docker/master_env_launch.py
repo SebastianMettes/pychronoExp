@@ -44,6 +44,7 @@ def update_optimizer(action_agent,config):#determine most recent agent release f
     
 
     action_agent.net.load_model(os.path.join(filepath,'model.pt'))
+    action_agent.cuda()
     optimizer = optim.Adam(params=action_agent.net.parameters(),lr=config['learning_rate'])
     optimizer.load_state_dict(torch.load(os.path.join(filepath,'optimizer.pt')))
         
