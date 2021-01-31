@@ -4,13 +4,17 @@ import os
 import json
 from tqdm.auto import tqdm
 
+with open("/data/sim/config.json","r") as file:
+    config=json.load(file)
 
 folder = 'random_starts'
-agent = 21
-episode_number = 72
-percentile = 0
-num_steps = 3000
+agent = 132
+episode_number = 210
+percentile = config['PERCENTILE']
+num_steps = config['num_steps']
+
 filename = os.path.join("/home/sebastian/Documents",folder,str(agent)+".json")
+
 
 with open(filename,"r") as file:
     episodes =json.load(file) #save state_tensor for agent optimization
@@ -42,6 +46,16 @@ for i in tqdm(range(len(episodes))):
         posY = episodes[i][1][j][1]
         EpisodeX.append((posX,posY))
     data1.append(EpisodeX)
+actiondata = []
+#extract x,y coordinate data
+for i in tqdm(range(len(episodes))):
+    EpisodeX = []
+    print(i)
+    for j in range(0,num_steps):
+        posX = episodes[i][1][j][6]
+        posY = episodes[i][1][j][7]
+        EpisodeX.append((posX,posY))
+    actiondata.append(EpisodeX)
 
 plt_data = data[episode_number]
 plt_data1 = data1[episode_number]

@@ -9,8 +9,6 @@ from gym_multiarm.agent.nodeAgent import agent
 import time
 import numpy as np
 
-##Create a unique ID for host computer
-
 
 ##load config.json  
 with open("/data/sim/config.json","r") as file:
@@ -27,10 +25,28 @@ sm = nn.Softmax(dim=1)
 #OUTPUT DATA ARRAY
 ##Check if previous version exists:
 data = []
-#if os.path.isfile(os.path.join(config["agent_path"],'data.csv')) == True:
-    #data = np.loadtxt(os.path.join(config["agent_path"],'data.csv'),  delimiter=",")
+try:
+    data = np.loadtxt(os.path.join(config['agent_path','data.csv'],delimiter = ','))
+except:
+    print('could not load data.csv')
 
 #modules:
+def update_optimizer(action_agent):#determine most recent agent release folder 
+    i = 1
+    filepath,_=update_agent_filepath(i)
+    while os.path.isdir(filepath):
+        i+=1
+        filepath,_ = update_agent_filepath(i)
+    i -=1 
+    filepath,_ = update_agent_filepath
+    
+
+    action_agent.net.load_model(os.path.join(filepath,'model.pt'))
+    optimizer = optim.Adam(params=action_agent.net.parameters(),lr=config['learning_rate'])
+    optimizer.load_state_dict(filepath,'optimizer.pt'))
+        
+    return(i,optimizer,action_agent)
+    
 def update_agent_filepath(config,agent_version):
     filepath = os.path.join(config["agent_path"],str(agent_version))
     
@@ -74,9 +90,14 @@ def optimal_state_tensor(config,file_list,agent_version):
     
 #save initialized weights as version 1
 agent_version = 1
+
 filepath,trialpath = update_agent_filepath(config,agent_version)
 
-action_agent.net.save_model(filepath)
+#check if any newer agent_version exist:
+agent_version,optimizer,action_agent = update_optimizer()
+filepath,trialpath = update_agent_filepath(config,agent_version)
+if agent_version == 1:
+    action_agent.net.save_model(filepath,optimizer)
 action_agent.cuda()
 
 print("I'm here now...")    
