@@ -47,5 +47,5 @@ if __name__=="__main__":
     with open("/data/sim/config.json","r") as file:
         config=json.load(file)
 
-    extractor(149,config,'/home/sebastian/Documents/random_starts')
+    extractor(160,config,'/home/sebastian/Documents/random_starts')
 

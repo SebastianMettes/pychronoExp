@@ -8,8 +8,8 @@ with open("/data/sim/config.json","r") as file:
     config=json.load(file)
 
 folder = 'random_starts'
-agent = 132
-episode_number = 210
+agent = 160
+episode_number = 21
 percentile = config['PERCENTILE']
 num_steps = config['num_steps']
 

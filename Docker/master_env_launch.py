@@ -26,24 +26,26 @@ sm = nn.Softmax(dim=1)
 ##Check if previous version exists:
 data = []
 try:
-    data = np.loadtxt(os.path.join(config['agent_path','data.csv'],delimiter = ','))
-except:
-    print('could not load data.csv')
+    data = np.loadtxt(os.path.join(config['agent_path'],'data.csv'),delimiter = ',')
+    print(data)
+except Exception as e:
+    print('could not load data.csv', e)
+
 
 #modules:
-def update_optimizer(action_agent):#determine most recent agent release folder 
+def update_optimizer(action_agent,config):#determine most recent agent release folder 
     i = 1
-    filepath,_=update_agent_filepath(i)
+    filepath,_=update_agent_filepath(config,i)
     while os.path.isdir(filepath):
         i+=1
-        filepath,_ = update_agent_filepath(i)
+        filepath,_ = update_agent_filepath(config,i)
     i -=1 
-    filepath,_ = update_agent_filepath
+    filepath,_ = update_agent_filepath(config,i)
     
 
     action_agent.net.load_model(os.path.join(filepath,'model.pt'))
     optimizer = optim.Adam(params=action_agent.net.parameters(),lr=config['learning_rate'])
-    optimizer.load_state_dict(filepath,'optimizer.pt'))
+    optimizer.load_state_dict(torch.load(os.path.join(filepath,'optimizer.pt')))
         
     return(i,optimizer,action_agent)
     
@@ -94,14 +96,14 @@ agent_version = 1
 filepath,trialpath = update_agent_filepath(config,agent_version)
 
 #check if any newer agent_version exist:
-agent_version,optimizer,action_agent = update_optimizer()
+agent_version,optimizer,action_agent = update_optimizer(action_agent,config)
 filepath,trialpath = update_agent_filepath(config,agent_version)
 if agent_version == 1:
     action_agent.net.save_model(filepath,optimizer)
 action_agent.cuda()
 
 print("I'm here now...")    
-
+print(filepath)
 while True:
 #Continuously check for new json files with complete state tensors for each episode
     #create an array of filenames
@@ -156,12 +158,13 @@ while True:
     agent_version = agent_version + 1
     filepath,trialpath = update_agent_filepath(config,agent_version)
     action_agent.cpu()
-    action_agent.net.save_model(filepath)
+    action_agent.net.save_model(filepath,optimizer)
     action_agent.cuda()
     loss_mean = np.mean(loss_store)
 
-
+    data = list(data)
     data.append((agent_version,mean,loss_mean))
     print(agent_version,mean, loss_mean)
     data_array = np.array(data)
     np.savetxt(os.path.join(config['agent_path'],'data.csv'), data_array, delimiter=",")
+    print('data saved')
