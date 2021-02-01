@@ -4,16 +4,18 @@ import os
 import json
 from tqdm.auto import tqdm
 
-with open("/data/sim/config.json","r") as file:
+
+folder = 'random_starts/episodes'
+with open("/home/sebastian/Documents/random_starts/config.json","r") as file:
     config=json.load(file)
 
-folder = 'random_starts'
-agent = 273
-episode_number = 50
+folder = 'random_starts/episodes'
+agent = 10
+episode_number = 90
 percentile = config['PERCENTILE']
 num_steps = config['num_steps']
 
-filename = os.path.join("/home/sebastian/Documents",folder,str(agent)+".json")
+filename = os.path.join("/home/sebastian/Documents/",folder,str(agent)+".json")
 
 
 with open(filename,"r") as file:

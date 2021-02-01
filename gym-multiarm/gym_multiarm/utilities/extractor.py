@@ -6,13 +6,12 @@ from tqdm.auto import tqdm
 
 
 class extractor():
-    def __init__(self,agent_number,config,local_dir):
-
+    def __init__(self,agent_number,agent_final,config,local_dir,skip = 1):
         agent_init = agent_number
-        agent_final = agent_init+1
+        agent_final = agent_final
         config = config
 
-        for i in range(agent_init,agent_final):
+        for i in range(agent_init,agent_final,skip):
             agent = i
             episodes = []
 
@@ -47,5 +46,5 @@ if __name__=="__main__":
     with open("/data/sim/config.json","r") as file:
         config=json.load(file)
 
-    extractor(273,config,'/home/sebastian/Documents/random_starts')
+    extractor(1,303,config,'/home/sebastian/Documents/random_starts/episodes',skip=3)
 
