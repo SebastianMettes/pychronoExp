@@ -8,8 +8,8 @@ with open("/data/sim/config.json","r") as file:
     config=json.load(file)
 
 folder = 'random_starts'
-agent = 160
-episode_number = 21
+agent = 273
+episode_number = 50
 percentile = config['PERCENTILE']
 num_steps = config['num_steps']
 
@@ -21,8 +21,8 @@ with open(filename,"r") as file:
 
 rewards, _ = zip(*episodes)
 print(rewards)
-reward_cutoff = np.percentile(rewards,percentile,overwrite_input=True)
-episodes = list(filter(lambda x: x[0] >= reward_cutoff,episodes))
+#reward_cutoff = np.percentile(rewards,percentile,overwrite_input=True)
+#episodes = list(filter(lambda x: x[0] >= reward_cutoff,episodes))
 episodes = sorted(episodes,key=lambda x: x[0])
 
 

@@ -1,0 +1,38 @@
+{
+    "dimensions":
+    {
+        "arm_length":1.1,
+        "arm_width":0.02,
+        "arm_height":0.0125
+    },
+    "num_steps":3000,
+    "step_size":0.001,
+    "max_torque":1,    
+    "materials":
+    {
+        "steel":
+        {
+        "E":2.15E9,
+        "poisson":0.5,
+        "density":8050
+        },
+        "pla":
+        {
+            "E":2.3E11,
+            "poisson":0.5,
+            "density":600
+        }
+    },
+    "pychrono_dir":"/pychronoExp",
+    "save_dir":"/data/sim/trial",
+    "agent_path":"/data/sim/agent",
+    "HIDDEN_SIZE":128,
+    "OBSERVE_SIZE":20,
+    "N_ACTIONS":9,
+    "BATCH_SIZE":30,
+    "PERCENTILE":70,
+    "learning_rate":0.01,
+    "gpu_batch_size":50
+    
+
+}
