@@ -29,10 +29,10 @@ RUN cd pytorch
 ENV USE_CUDA=0
 RUN export CMAKE_PREFIX_PATH=${CONDA_PREFIX:-"$(dirname $(which conda))/../"}
 RUN cd pytorch && python setup.py build --cmake-only
-RUN cmake build -DDISABLE_AVX2:BOOL=TRUE -DCXX_AVX2_FOUND:BOOL=FALSE -DC_AVX2_FOUND:BOOL=FALSE -DDISABLE_AVX512F:BOOL=TRUE .
-RUN python -u setup.py install
+RUN cd pytorch && cmake build -DDISABLE_AVX2:BOOL=TRUE -DCXX_AVX2_FOUND:BOOL=FALSE -DC_AVX2_FOUND:BOOL=FALSE -DDISABLE_AVX512F:BOOL=TRUE .
+RUN cd pytorch &&  python -u setup.py install
 
-RUN git pull
+RUN cd pychronoExp && git pull
 RUN pip install -e /pychronoExp/gym-multiarm
 COPY pythonenv.sh /pythonenv.sh
 RUN mkdir /data
