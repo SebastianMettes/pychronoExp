@@ -43,7 +43,7 @@ def update_optimizer(action_agent,config):#determine most recent agent release f
     i -=1 
     filepath,_ = update_agent_filepath(config,i)
     
-
+    
     action_agent.net.load_model(os.path.join(filepath,'model.pt'))
     action_agent.cuda()
     optimizer = optim.Adam(params=action_agent.net.parameters(),lr=config['learning_rate'])
@@ -98,8 +98,10 @@ agent_version = 1
 filepath,trialpath = update_agent_filepath(config,agent_version)
 
 #check if any newer agent_version exist:
-agent_version,optimizer,action_agent = update_optimizer(action_agent,config)
-filepath,trialpath = update_agent_filepath(config,agent_version)
+print(agent_version)
+if agent_version >1:
+    agent_version,optimizer,action_agent = update_optimizer(action_agent,config)
+    filepath,trialpath = update_agent_filepath(config,agent_version)
 if agent_version == 1:
     action_agent.net.save_model(filepath,optimizer)
 action_agent.cuda()
