@@ -1,7 +1,7 @@
 import gym
 import pychrono as chrono
 import pychrono.fea as fea
-import pychrono.mkl as mkl
+#import pychrono.mkl as mkl
 try: 
     import pychrono.irrlicht as chronoirr
 except:
