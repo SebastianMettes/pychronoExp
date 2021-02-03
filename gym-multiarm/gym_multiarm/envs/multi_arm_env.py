@@ -14,8 +14,9 @@ from gym import error, spaces, utils
 from gym.utils import seeding
 try: 
     from gym_multiarm.envs.packages import multi_arm_assembler_3 as sim
-except:
-    pass
+except Exception as t:
+    print(t)
+    
 #try:
 #    from packages import multi_arm_assembler_3 as sim
 #except:
