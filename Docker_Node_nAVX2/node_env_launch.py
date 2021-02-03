@@ -104,7 +104,7 @@ while True:
 
     #reset the environment to starting state
     print("Second Reset")
-    environmentTest.reset(False,False,config['dimensions']['arm_width'],config['dimensions']['arm_height'],position1,position2,pla,config['step_size'],config['max_torque'],target)
+    environmentTest.reset(False,True,config['dimensions']['arm_width'],config['dimensions']['arm_height'],position1,position2,pla,config['step_size'],config['max_torque'],target)
   
 
     #get initial state 
