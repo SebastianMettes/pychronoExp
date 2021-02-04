@@ -138,7 +138,6 @@ class Multi_armEnv(gym.Env):
         dist_new = np.sqrt(dist_new[0]**2+dist_new[1]**2)
         dist_change = dist_previous-dist_new
         dist_max = self.target-self.position_original
-        dist_max_saved = dist_max
         dist_max = np.sqrt(dist_max[0]**2+dist_max[1]**2)
         if dist_change > 0:
             reward = dist_change/dist_max
@@ -146,23 +145,6 @@ class Multi_armEnv(gym.Env):
             reward = 2*dist_change/dist_max
         else:
             reward = 0
-
-                #calculate distance from line
-        ##line slope:
-        slope = dist_max_saved[1]/dist_max_saved[0]
-        c = -self.target[1]+slope*self.target[0]
-        a = -slope
-        b = 1
-        upper_old = a*self.state[6]+b*self.state[7]+c
-        upper_new = a*self.state_new[6]+b*self.state_new[7]+c
-        lower = np.sqrt(a**2+b**2)
-        upper_old = np.abs(upper_old)
-        upper_new = np.abs(upper_new)
-        previous_distance_line = upper_old/lower
-        current_distance_line = upper_new/lower
-        line_reward = (previous_distance_line-current_distance_line)/dist_max
-        reward = line_reward+reward      
-        
         return(reward)
     def save(self): #Future function to save all pyChrono data to create deep network which simulates the motion.
         pass
