@@ -5,13 +5,13 @@ import json
 from tqdm.auto import tqdm
 
 
-folder = 'random_starts/episodes'
-with open("/home/sebastian/Documents/random_starts/config.json","r") as file:
+folder = 'random_starts_new/episodes'
+with open("/home/sebastian/Documents/random_starts_new/config.json","r") as file:
     config=json.load(file)
 
 folder = 'random_starts/episodes'
-agent = 10
-episode_number = 90
+agent = 7
+episode_number = 10
 percentile = config['PERCENTILE']
 num_steps = config['num_steps']
 
