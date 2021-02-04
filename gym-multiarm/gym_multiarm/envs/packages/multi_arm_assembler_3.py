@@ -1,6 +1,6 @@
 import pychrono as chrono
 import pychrono.fea as fea
-import pychrono.mkl as mkl
+#import pychrono.mkl as mkl
 try: 
     import pychrono.irrlicht as chronoirr
 except:
@@ -52,7 +52,7 @@ class Motor_arm():
         self.mesh = fea.ChMesh()
         self.mesh.SetAutomaticGravity(gravity)
 
-        self.section = fea.ChBeamSectionAdvanced()
+        self.section = fea.ChBeamSectionEulerAdvanced()
         self.section.SetAsRectangularSection(width,height)
         self.section.SetYoungModulus(material.modulus)
         self.section.SetGshearModulus(material.shear)

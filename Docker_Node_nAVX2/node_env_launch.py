@@ -1,6 +1,7 @@
 from gym_multiarm.envs import multi_arm_env as env
 from gym_multiarm.agent.nodeAgent import agent
 from datetime import datetime
+from tqdm.auto import tqdm
 import random
 import math
 import csv
@@ -104,7 +105,7 @@ while True:
 
     #reset the environment to starting state
     print("Second Reset")
-    environmentTest.reset(False,False,config['dimensions']['arm_width'],config['dimensions']['arm_height'],position1,position2,pla,config['step_size'],config['max_torque'],target)
+    environmentTest.reset(False,True,config['dimensions']['arm_width'],config['dimensions']['arm_height'],position1,position2,pla,config['step_size'],config['max_torque'],target)
   
 
     #get initial state 
@@ -113,9 +114,10 @@ while True:
     state_tensor = [] #initialize an empty state tensor
 
     #conduct simulation
-    for i in range(numSteps):
+    for i in tqdm(range(numSteps)):
         #environmentTest.render() #not applicable to slave machines.
         action_digit = action_agent.calc_action(agent_version,state_new) #use agent to determine action from current state and agent version
+        #action_digit = 1
         action = convert_action(action_digit)
         state,state_new,action = environmentTest.forwardStep([action[0],action[1]]) #run simulation
         reward = environmentTest.reward() #calculate reward
