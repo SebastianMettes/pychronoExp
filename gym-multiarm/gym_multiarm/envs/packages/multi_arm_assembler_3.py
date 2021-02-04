@@ -51,8 +51,10 @@ class Motor_arm():
         self.material = material
         self.mesh = fea.ChMesh()
         self.mesh.SetAutomaticGravity(gravity)
-
-        self.section = fea.ChBeamSectionEulerAdvanced()
+        if hasattr(fea,'ChBeamSectionEulerAdvanced'):
+            self.section = fea.ChBeamSectionEulerAdvanced()
+        else:
+            self.section = fea.ChBeamSectionAdvanced()
         self.section.SetAsRectangularSection(width,height)
         self.section.SetYoungModulus(material.modulus)
         self.section.SetGshearModulus(material.shear)
