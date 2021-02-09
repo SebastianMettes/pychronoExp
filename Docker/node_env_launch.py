@@ -19,7 +19,7 @@ To launch the agent,the config file must include all environment and agent param
 host_id = uuid.uuid4()
 
 ##load config.json here... 
-with open("/scratch/data/sim/config.json","r") as file:
+with open("/scratch/smettes/data/sim/config.json","r") as file:
     config=json.load(file)
 
 ##Import materials
