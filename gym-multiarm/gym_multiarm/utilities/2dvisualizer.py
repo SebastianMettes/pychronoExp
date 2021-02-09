@@ -4,14 +4,14 @@ import os
 import json
 from tqdm.auto import tqdm
 
-
-folder = 'random_starts_new/episodes'
-with open("/home/sebastian/Documents/random_starts_new/config.json","r") as file:
+top = '/home/sebastian/Documents/non_random_starts/'
+folder = os.path.join(top,'episodes')
+lossdata = os.path.join(top,'agent/data.csv')
+with open(os.path.join(top,'config.json'),"r") as file:
     config=json.load(file)
 
-folder = 'random_starts/episodes'
-agent = 7
-episode_number = 10
+agent = 20
+episode_number = 92
 percentile = config['PERCENTILE']
 num_steps = config['num_steps']
 
@@ -50,14 +50,30 @@ for i in tqdm(range(len(episodes))):
     data1.append(EpisodeX)
 actiondata = []
 #extract x,y coordinate data
-for i in tqdm(range(len(episodes))):
-    EpisodeX = []
-    print(i)
-    for j in range(0,num_steps):
-        posX = episodes[i][1][j][6]
-        posY = episodes[i][1][j][7]
-        EpisodeX.append((posX,posY))
-    actiondata.append(EpisodeX)
+try:
+    for i in tqdm(range(len(episodes))):
+        EpisodeX = []
+        print(i)
+        for j in range(0,num_steps):
+            posX = episodes[i][1][j][6]
+            posY = episodes[i][1][j][7]
+            EpisodeX.append((posX,posY))
+        actiondata.append(EpisodeX)
+except Exception as e:
+    print('no action data found')
+
+try:
+    csvf = np.loadtxt(lossdata,delimiter = ',')
+    Aversion,avgReward,loss = zip(*csvf)
+    plt.plot(Aversion,avgReward)
+    plt.title("Reward")
+    plt.subplots()
+    plt.title('Loss')
+    plt.plot(Aversion,loss)
+
+except Exception as e:
+    print('could not load data.csv', e)
+    
 
 plt_data = data[episode_number]
 plt_data1 = data1[episode_number]

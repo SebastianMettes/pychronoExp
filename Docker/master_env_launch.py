@@ -11,7 +11,7 @@ import numpy as np
 
 
 ##load config.json  
-with open("/data/sim/config.json","r") as file:
+with open("/scratch/data/sim/config.json","r") as file:
     config=json.load(file)
 
 batch_size = config["gpu_batch_size"]
