@@ -5,8 +5,8 @@
         "arm_width":0.02,
         "arm_height":0.0125
     },
-    "num_steps":1000,
-    "step_size":0.001,
+    "num_steps":500,
+    "step_size":0.002,
     "max_torque":1,    
     "materials":
     {
@@ -29,10 +29,10 @@
     "HIDDEN_SIZE":128,
     "OBSERVE_SIZE":20,
     "N_ACTIONS":9,
-    "BATCH_SIZE":1000,
+    "BATCH_SIZE":100,
     "PERCENTILE":0,
     "learning_rate":0.01,
-    "gpu_batch_size":200,
+    "gpu_batch_size":50,
     "num_repeat_episodes":10
     
 
