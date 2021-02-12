@@ -35,7 +35,7 @@ RUN mkdir /data/sim/agent
 #RUN echo '[1]' >> '/data/sim/agent/1/weights.json'
 
 
-RUN touch /data/sim/agent/data.csv
+
 CMD "/pythonhostenv.sh"
 
 

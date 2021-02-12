@@ -36,7 +36,7 @@ RUN mkdir /data/sim/agent
 #RUN echo '[1]' >> '/data/sim/agent/1/weights.json'
 
 
-COPY config.json /data/sim/config.json
+
 CMD "/pythonenv.sh"
 
 
