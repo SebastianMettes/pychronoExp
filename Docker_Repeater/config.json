@@ -30,10 +30,9 @@
     "OBSERVE_SIZE":20,
     "N_ACTIONS":9,
     "BATCH_SIZE":1000,
-    "PERCENTILE":0,
+    "PERCENTILE":80,
     "learning_rate":0.01,
-    "gpu_batch_size":200,
-    "num_repeat_episodes":10
+    "gpu_batch_size":200
     
 
 }
