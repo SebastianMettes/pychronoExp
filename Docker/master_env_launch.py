@@ -30,6 +30,9 @@ try:
     print(data)
 except Exception as e:
     print('could not load data.csv', e)
+    with open(os.path.join(config['agent_path'],'data.csv'),'w') as file: 
+        pass
+
 
 
 #modules:
