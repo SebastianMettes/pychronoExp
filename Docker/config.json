@@ -24,15 +24,15 @@
         }
     },
     "pychrono_dir":"/pychronoExp",
-    "save_dir":"/scratch/data/sim/trial",
-    "agent_path":"/scratch/data/sim/agent",
+    "save_dir":"/data/sim/trial",
+    "agent_path":"/data/sim/agent",
     "HIDDEN_SIZE":128,
     "OBSERVE_SIZE":20,
     "N_ACTIONS":9,
     "BATCH_SIZE":1000,
     "PERCENTILE":80,
     "learning_rate":0.01,
-    "gpu_batch_size":100
+    "gpu_batch_size":200
     
 
 }

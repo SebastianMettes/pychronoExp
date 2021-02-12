@@ -29,6 +29,7 @@ RUN mkdir /data/sim
 RUN mkdir /data/sim/trial
 #RUN mkdir '/data/sim/trial/1'
 RUN mkdir /data/sim/agent
+COPY config.json /data/sim/config.json
 #RUN mkdir '/data/sim/agent/1'
 
 #RUN touch '/data/sim/agent/1/weights.json'
