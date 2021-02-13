@@ -36,17 +36,17 @@ except Exception as e:
 
 
 #modules:
-def update_optimizer(action_agent,config):#determine most recent agent release folder 
-    i = 1
-    filepath,_=update_agent_filepath(config,i)
-    while os.path.isdir(filepath):
-        i+=1 
-        filepath,_ = update_agent_filepath(config,i)
+def update_optimizer(action_agent,config,agent_version):#determine most recent agent release folder 
+    i = agent_version
+    filepath,_,_=update_agent_filepath(config,i)
+#    while os.path.isdir(filepath):
+#        i+=1 
+#        filepath,_,_ = update_agent_filepath(config,i)
                
-    i -=1 
-    filepath,_ = update_agent_filepath(config,i)
+#    i -=1 
+#    filepath,_,_ = update_agent_filepath(config,i)
     
-    
+    print('loaded agent',i)
     action_agent.net.load_model(os.path.join(filepath,'model.pt'))
     action_agent.cuda()
     optimizer = optim.Adam(params=action_agent.net.parameters(),lr=config['learning_rate'])
@@ -56,12 +56,24 @@ def update_optimizer(action_agent,config):#determine most recent agent release f
     
 def update_agent_filepath(config,agent_version):
     filepath = os.path.join(config["agent_path"],str(agent_version))
-    
+    i=0
+    paththere = True
+    while paththere == True:
+        if os.path.isdir(os.path.join(config["agent_path"],str(agent_version+i+1))) == True:
+            filepath = os.path.join(config["agent_path"],str(agent_version+i+1))
+            print('agent version is currently',i+1)
+            i=i+1
+        else:
+            filepath = os.path.join(config["agent_path"],str(agent_version+i))
+            agent_version = agent_version+i
+            paththere = False
+
+        
     trialpath = os.path.join(config["save_dir"],str(agent_version))
     if os.path.isdir(trialpath) == False:
         os.mkdir(trialpath)
         os.system(f"chmod 777 {trialpath}")
-    return(filepath,trialpath)
+    return(filepath,trialpath,agent_version)
 
 def optimal_state_tensor(config,file_list,agent_version):
     episodes = []
@@ -98,19 +110,20 @@ def optimal_state_tensor(config,file_list,agent_version):
 #save initialized weights as version 1
 agent_version = 1
 
-filepath,trialpath = update_agent_filepath(config,agent_version)
+filepath,trialpath,agent_version = update_agent_filepath(config,agent_version)
 
 #check if any newer agent_version exist:
 print(agent_version)
 if agent_version >1:
-    agent_version,optimizer,action_agent = update_optimizer(action_agent,config)
-    filepath,trialpath = update_agent_filepath(config,agent_version)
+    agent_version,optimizer,action_agent = update_optimizer(action_agent,config,agent_version)
+    filepath,trialpath,agent_version = update_agent_filepath(config,agent_version)
 if agent_version == 1:
     action_agent.net.save_model(filepath,optimizer)
 action_agent.cuda()
 
 print("I'm here now...")    
 print(filepath)
+print(agent_version)
 while True:
 #Continuously check for new json files with complete state tensors for each episode
     #create an array of filenames
@@ -133,7 +146,7 @@ while True:
 
     print("And now here...")
     for i in range(0,int(t)):
-        print("Running a batch")
+        print("Running a batch from",batch_size*i,'to',batch_size*(i+1) - 1)
         optimal_tensor_batch = optimal_tensor[batch_size*i:(batch_size*(i+1) - 1)]
         #optimize:
         obs_v, act_v, _ = zip(*optimal_tensor_batch)
@@ -163,7 +176,7 @@ while True:
 
 
     agent_version = agent_version + 1
-    filepath,trialpath = update_agent_filepath(config,agent_version)
+    filepath,trialpath,agent_version = update_agent_filepath(config,agent_version)
     action_agent.cpu()
     action_agent.net.save_model(filepath,optimizer)
     action_agent.cuda()
