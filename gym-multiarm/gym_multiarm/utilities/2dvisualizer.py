@@ -10,8 +10,8 @@ lossdata = os.path.join(top,'agent/data.csv')
 with open(os.path.join(top,'config.json'),"r") as file:
     config=json.load(file)
 
-agent = 9
-episode_number = 40
+agent = 13
+episode_number = 10
 percentile = config['PERCENTILE']
 num_steps = config['num_steps']
 
@@ -100,8 +100,6 @@ plt.title(f"Episode {episode_number} -- Reward : {episodes[episode_number][0]}\n
 circle1 = plt.Circle((targetx, targety), 0.01, color='r')
 plt.legend()
 ax.add_patch(circle1)
-
-plt.show()
 
 print('now for action plots')
 fig,ax = plt.subplots()
