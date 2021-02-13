@@ -97,9 +97,10 @@ while True:
 
     position2 = (position1[0]+position2[0],0,position1[2]+position2[2])
     reward_list = []
-
+    j = 0
+    k=0
     multi_state_tensor = []
-    for j in range(repetitions):
+    while j<repetitions:
     #reset the environment to starting state
         print("Second Reset",j)
         state_tensor = []
@@ -124,20 +125,31 @@ while True:
 
             if environmentTest.headless ==False:
                 environmentTest.render()
-
+        
         multi_state_tensor.append(state_tensor)
         reward_list.append(reward_total)
+        j=j+1
+        max_reward = max(reward_list)
+        if max_reward <0:
+            k=k+1
+            print('k=',k)
+            j=j-1
+            if k>10*repetitions:
+                j=repetitions
+
         
+    
     max_index = reward_list.index(max(reward_list))
-    print(max_index,reward_list[max_index],'index, value')
+    print(max_index,reward_list[max_index],len(reward_list),'index, value, length')
 
     state_tensor = multi_state_tensor[max_index]
+    j=j+1
     #print(state_tensor[0:1])
 
-    
-    with open(filename,"w") as file:
-        file.write(json.dumps(state_tensor,indent=0)) #save state_tensor for agent optimization
-        print("File Saved")
+    if max_reward>0:
+        with open(filename,"w") as file:
+            file.write(json.dumps(state_tensor,indent=0)) #save state_tensor for agent optimization
+            print("File Saved")
         
 
 
