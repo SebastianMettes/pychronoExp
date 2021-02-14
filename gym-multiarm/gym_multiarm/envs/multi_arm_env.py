@@ -98,15 +98,15 @@ class Multi_armEnv(gym.Env):
                 self.mtorque[i] = 0
             if abs(self.mtorque[i])<self.maxtorque:
                 if action[i] >0:
-                    self.mtorque[i] = self.mtorque[i]+self.maxtorque/5 #ramp forces over 5 "steps"
+                    self.mtorque[i] = self.mtorque[i]+self.maxtorque/1 #ramp forces over 5 "steps"
                 if action[i]<0:
-                    self.mtorque[i] = self.mtorque[i]-self.maxtorque/5 #ramp forces over 5 "steps"
+                    self.mtorque[i] = self.mtorque[i]-self.maxtorque/1 #ramp forces over 5 "steps"
 
             if abs(self.mtorque[i]) == self.maxtorque:
                 if ((action[i]>0) and (self.mtorque[i]<0)):
-                    self.mtorque[i] = self.mtorque[i]+self.maxtorque/5 
+                    self.mtorque[i] = self.mtorque[i]+self.maxtorque/1 
                 if ((action[i]<0) and (self.mtorque[i]>0)):
-                    self.mtorque[i] = self.mtorque[i]-self.maxtorque/5 
+                    self.mtorque[i] = self.mtorque[i]-self.maxtorque/1 
         self.arm1.set_torque(float(self.mtorque[0]))
         self.arm2.set_torque(float(self.mtorque[1]))
         self.motor_system.do_sim_step(self.timestep)
