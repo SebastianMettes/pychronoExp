@@ -7,4 +7,4 @@ cd /
 python --version
 #python -c "print('hello world')"
 #python -c "conda activate 379"
-python "/pychronoExp/Docker_Repeater/node_env_launch.py"
+python "/pychronoExp/Docker_Repeater_fixed/node_env_launch.py"
