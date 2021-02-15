@@ -149,10 +149,10 @@ while True:
                     print('saved difficult episode')
 
         
-    if j<repetitions:
-        max_index = reward_list.index(max(reward_list))
-        print(max_index,reward_list[max_index],len(reward_list),'index, value, length')
-        state_tensor = multi_state_tensor[max_index]
+
+    max_index = reward_list.index(max(reward_list))
+    print(max_index,reward_list[max_index],len(reward_list),'index, value, length')
+    state_tensor = multi_state_tensor[max_index]
     j=j+1
 
     if max_reward>0:
