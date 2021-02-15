@@ -38,13 +38,7 @@ except Exception as e:
 #modules:
 def update_optimizer(action_agent,config,agent_version):#determine most recent agent release folder 
     i = agent_version
-    filepath,_,_=update_agent_filepath(config,i)
-#    while os.path.isdir(filepath):
-#        i+=1 
-#        filepath,_,_ = update_agent_filepath(config,i)
-               
-#    i -=1 
-#    filepath,_,_ = update_agent_filepath(config,i)
+    filepath,_,_,_=update_agent_filepath(config,i)
     
     print('loaded agent',i)
     action_agent.net.load_model(os.path.join(filepath,'model.pt'))
@@ -73,7 +67,12 @@ def update_agent_filepath(config,agent_version):
     if os.path.isdir(trialpath) == False:
         os.mkdir(trialpath)
         os.system(f"chmod 777 {trialpath}")
-    return(filepath,trialpath,agent_version)
+    difficultpath = os.path.join(config["difficult_dir"],str(agent_version))
+    if os.path.isdir(difficultpath) == False:
+        os.mkdir(difficultpath)
+        os.system(f"chmod 777 {difficultpath}")
+
+    return(filepath,trialpath,agent_version,difficultpath)
 
 def optimal_state_tensor(config,file_list,agent_version):
     episodes = []
@@ -110,13 +109,13 @@ def optimal_state_tensor(config,file_list,agent_version):
 #save initialized weights as version 1
 agent_version = 1
 
-filepath,trialpath,agent_version = update_agent_filepath(config,agent_version)
+filepath,trialpath,agent_version,difficult_path = update_agent_filepath(config,agent_version)
 
 #check if any newer agent_version exist:
 print(agent_version)
 if agent_version >1:
     agent_version,optimizer,action_agent = update_optimizer(action_agent,config,agent_version)
-    filepath,trialpath,agent_version = update_agent_filepath(config,agent_version)
+    filepath,trialpath,agent_version,difficult_path = update_agent_filepath(config,agent_version)
 if agent_version == 1:
     action_agent.net.save_model(filepath,optimizer)
 action_agent.cuda()
@@ -176,7 +175,7 @@ while True:
 
 
     agent_version = agent_version + 1
-    filepath,trialpath,agent_version = update_agent_filepath(config,agent_version)
+    filepath,trialpath,agent_version,difficult_path = update_agent_filepath(config,agent_version)
     action_agent.cpu()
     action_agent.net.save_model(filepath,optimizer)
     action_agent.cuda()

@@ -75,9 +75,13 @@ while True:
 
     agent_version = action_agent.update_version()
 
-    #create the filename, path, for the output data file
-    filename = str(host_id)+"."+date_time+".JSON"
-    filename = os.path.join(config["save_dir"],str(agent_version),filename)
+    #create the good_episodes, path, for the output data file
+    good_episodes = str(host_id)+"."+date_time+".JSON"
+    good_episodes = os.path.join(config["save_dir"],str(agent_version),good_episodes)
+
+    #create the bod episodes bath (those which a solution was never found:
+    bad_episodes = str(host_id)+'.'+date_time+".JSON"
+    bad_episodes = os.path.join(config["difficult_dir"],str(agent_version),bad_episodes)
 
     #set the target from random coordinates:
     target_angle = (random.random()*2*math.pi)
@@ -106,7 +110,8 @@ while True:
         print("Second Reset",j)
         state_tensor = []
         environmentTest.reset(False,True,config['dimensions']['arm_width'],config['dimensions']['arm_height'],position1,position2,pla,config['step_size'],config['max_torque'],target)
-    
+   
+
 
         #get initial state 
         state_new = environmentTest.getstate()
@@ -137,20 +142,24 @@ while True:
             j=j-1
             if k>10*repetitions:
                 j=repetitions
+                with open(bad_episodes,"w") as file:
+                    max_index = reward_list.index(max(reward_list))
+                    state_tensor = multi_state_tensor[max_index]
+                    file.write(json.dumps(state_tensor,indent=0)) #save state_tensor for agent optimization
+                    print('saved difficult episode')
 
         
-    
-    max_index = reward_list.index(max(reward_list))
-    print(max_index,reward_list[max_index],len(reward_list),'index, value, length')
-
-    state_tensor = multi_state_tensor[max_index]
+    if j<repetitions:
+        max_index = reward_list.index(max(reward_list))
+        print(max_index,reward_list[max_index],len(reward_list),'index, value, length')
+        state_tensor = multi_state_tensor[max_index]
     j=j+1
-    #print(state_tensor[0:1])
 
     if max_reward>0:
-        with open(filename,"w") as file:
+        with open(good_episodes,"w") as file:
             file.write(json.dumps(state_tensor,indent=0)) #save state_tensor for agent optimization
-            print("File Saved")
+            print("File Saved", agent_version, " agent version")
+
         
 
 
