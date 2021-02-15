@@ -147,8 +147,6 @@ while True:
                     state_tensor = multi_state_tensor[max_index]
                     file.write(json.dumps(state_tensor,indent=0)) #save state_tensor for agent optimization
                     print('saved difficult episode')
-        if max_reward >0.95:
-            j=repetitions
 
         
 
