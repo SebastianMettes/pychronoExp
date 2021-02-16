@@ -96,7 +96,7 @@ if __name__=="__main__":
     with open("/data/sim/config.json","r") as file:
         config=json.load(file)
 
-    analysis = data_analysis('data/sim','/home/sebastian/Documents/3.0 fixed_1_random_2_repeater',1,310,output='all',type='episodes',skip=1)
+    analysis = data_analysis('data/sim','/home/sebastian/Documents/3.0 fixed_1_random_2_repeater',300,320,output='all',type='difficult',skip=1)
     analysis.extractdata()
     analysis.datacheck()
     analysis.extract_initial_states()

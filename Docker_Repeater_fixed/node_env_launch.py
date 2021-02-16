@@ -97,7 +97,7 @@ while True:
     position1 = (arm_length*math.cos(pos1_angle),0,arm_length*math.sin(pos1_angle))
 
     #position 2:
-    pos2_angle = (random.random()*2*math.pi)
+    pos2_angle = (random.random()*math.pi)
     position2 = (arm_length*math.cos(pos2_angle),0,arm_length*math.sin(pos2_angle))
 
     position2 = (position1[0]+position2[0],0,position1[2]+position2[2])
