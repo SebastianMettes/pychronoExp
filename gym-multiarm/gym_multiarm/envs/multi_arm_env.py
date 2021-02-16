@@ -98,17 +98,22 @@ class Multi_armEnv(gym.Env):
                 self.mtorque[i] = 0
             if abs(self.mtorque[i])<self.maxtorque:
                 if action[i] >0:
-                    self.mtorque[i] = self.mtorque[i]+self.maxtorque/1 #ramp forces over 5 "steps"
+                    #self.mtorque[i] = self.mtorque[i]+self.maxtorque/1 #ramp forces over 5 "steps"
+                    self.mtorque[i] = self.maxtorque #jump directly to torque value, no ramp
                 if action[i]<0:
-                    self.mtorque[i] = self.mtorque[i]-self.maxtorque/1 #ramp forces over 5 "steps"
+                    #self.mtorque[i] = self.mtorque[i]-self.maxtorque/1 #ramp forces over 5 "steps"
+                    self.mtorque[i] = -self.maxtorque#jump directly to torque value, no ramp.
 
             if abs(self.mtorque[i]) == self.maxtorque:
                 if ((action[i]>0) and (self.mtorque[i]<0)):
-                    self.mtorque[i] = self.mtorque[i]+self.maxtorque/1 
+                    #self.mtorque[i] = self.mtorque[i]+self.maxtorque/1 
+                    self.mtorque[i] = self.maxtorque
                 if ((action[i]<0) and (self.mtorque[i]>0)):
-                    self.mtorque[i] = self.mtorque[i]-self.maxtorque/1 
+                    #self.mtorque[i] = self.mtorque[i]-self.maxtorque/1 
+                    self.mtorque[i]=-self.maxtorque
         self.arm1.set_torque(float(self.mtorque[0]))
         self.arm2.set_torque(float(self.mtorque[1]))
+        #ADD MORE MOTORS HERE... OR ADD A FOR LOOP.
         self.motor_system.do_sim_step(self.timestep)
         
 

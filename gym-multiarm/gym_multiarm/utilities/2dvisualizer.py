@@ -4,14 +4,14 @@ import os
 import json
 from tqdm.auto import tqdm
 
-top = '/home/sebastian/Documents/2.2 random_starts_repeater/'
+top = '/home/sebastian/Documents/3.0 fixed_1_random_2_repeater/'
 folder = os.path.join(top,'episodes')
 lossdata = os.path.join(top,'agent/data.csv')
 with open(os.path.join(top,'config.json'),"r") as file:
     config=json.load(file)
 
-agent = 214
-episode_number = 40
+agent = 269
+episode_number = 150
 percentile = config['PERCENTILE']
 num_steps = config['num_steps']
 
@@ -25,14 +25,14 @@ rewards, _ = zip(*episodes)
 print(rewards)
 #reward_cutoff = np.percentile(rewards,percentile,overwrite_input=True)
 #episodes = list(filter(lambda x: x[0] >= reward_cutoff,episodes))
-episodes = sorted(episodes,key=lambda x: x[0])
+#episodes = sorted(episodes,key=lambda x: x[0])
 
 
 data = []
 #extract x,y coordinate data of arm 1
 for i in tqdm(range(len(episodes))):
     EpisodeX = []
-    print(i)
+
     for j in range(0,num_steps):
         posX = episodes[i][1][j][2]
         posY = episodes[i][1][j][3]
@@ -42,7 +42,7 @@ data1 = []
 #extract x,y coordinate data of arm 0
 for i in tqdm(range(len(episodes))):
     EpisodeX = []
-    print(i)
+
     for j in range(0,num_steps):
         posX = episodes[i][1][j][0]
         posY = episodes[i][1][j][1]
@@ -53,7 +53,7 @@ actiondata = []
 try:
     for i in tqdm(range(len(episodes))):
         EpisodeX = []
-        print(i)
+
         for j in range(0,num_steps):
             action0 = episodes[i][1][j][6]
             action1 = episodes[i][1][j][7]

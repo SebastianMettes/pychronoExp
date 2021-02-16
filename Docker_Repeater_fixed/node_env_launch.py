@@ -107,7 +107,7 @@ while True:
     multi_state_tensor = []
     while j<repetitions:
     #reset the environment to starting state
-        print("Second Reset",j)
+        print("environment Reset, attempt #",j+1)
         state_tensor = []
         environmentTest.reset(False,True,config['dimensions']['arm_width'],config['dimensions']['arm_height'],position1,position2,pla,config['step_size'],config['max_torque'],target)
    
@@ -138,7 +138,7 @@ while True:
         max_reward = max(reward_list)
         if max_reward <0:
             k=k+1
-            print('k=',k)
+            print('sub-zero reward, extra attempt #',k+1)
             j=j-1
             if k>10*repetitions:
                 j=repetitions
@@ -158,7 +158,7 @@ while True:
     if max_reward>0:
         with open(good_episodes,"w") as file:
             file.write(json.dumps(state_tensor,indent=0)) #save state_tensor for agent optimization
-            print("File Saved", agent_version, " agent version")
+            print("Successful episode Saved, agent version # ", agent_version)
 
         
 
