@@ -48,7 +48,7 @@ class Multi_armEnv(gym.Env):
         motor1Vel = self.arm1.motor.GetMotorRot_dt()
         motor2Vel = self.arm2.motor.GetMotorRot_dt()
 
-        self.state_new = [arm1Pos.x,arm1Pos.z,arm1Vel.x,arm1Vel.z,arm1Acc.x,arm1Acc.z,arm2Pos.x,arm2Pos.z,arm2Vel.x,arm2Vel.z,arm2Acc.x,arm2Acc.z,motor1Pos,motor1Vel,self.mtorque[0],motor2Pos,motor2Vel,self.mtorque[1],self.target[0],self.target[1]]
+        self.state_new = [arm1Pos.x,arm1Pos.z,arm1Vel.x,arm1Vel.z,arm1Acc.x,arm1Acc.z,arm2Pos.x,arm2Pos.z,arm2Vel.x,arm2Vel.z,arm2Acc.x,arm2Acc.z,motor1Pos,motor1Vel,self.mtorque[0],motor2Pos,motor2Vel,self.mtorque[1],self.target[0],self.target[1],self.step]
         return self.state_new
         
     def reset(self,saveoutput,headless,crossx,crossy,position1,position2,material,timestep,maxtorque,target):
