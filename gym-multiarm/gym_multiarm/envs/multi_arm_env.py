@@ -134,7 +134,7 @@ class Multi_armEnv(gym.Env):
         else:
             print("Don't forget to set headless to False")
         
-    def reward(self):
+    def reward(self,config):
         tip_previous = np.array([self.state[6],self.state[7]])
         tip_new = np.array([self.state_new[6],self.state_new[7]])
 
@@ -149,9 +149,12 @@ class Multi_armEnv(gym.Env):
         if dist_change > 0:
             reward = dist_change/dist_max
         elif dist_change <0:
-            reward = 2*dist_change/dist_max
+            if dist_new>=config["reward_radius"]:
+                reward = 2*dist_change/dist_max
         else:
             reward = 0
+        if dist_new < config["reward_radius"]:
+            reward = reward+config['reward_radius_reward']
 
                 #calculate distance from line
         ##line slope:
