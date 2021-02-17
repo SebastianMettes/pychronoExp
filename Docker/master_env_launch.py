@@ -149,7 +149,7 @@ while True:
         optimal_tensor_batch = optimal_tensor[batch_size*i:(batch_size*(i+1) - 1)]
         #optimize:
         obs_v, act_v, _ = zip(*optimal_tensor_batch)
-        obs_v = torch.stack(obs_v).reshape((-1,20)).cuda() #Reshape the tensor to [B, 20]
+        obs_v = torch.stack(obs_v).reshape((-1,config["OBSERVE_SIZE"])).cuda() #Reshape the tensor to [B, observation size]
         act_v = torch.stack(act_v).reshape((-1)).cuda()
         optimizer.zero_grad()
         action_scores_v = action_agent.net(obs_v)
