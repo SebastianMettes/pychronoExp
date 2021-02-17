@@ -51,7 +51,7 @@ class data_analysis():
         self.target = []
         #self.arm_1 = []#irrelevant when arm 1 always has the same starting conditions
         self.arm_2 = []
-        for i in tqdm(range(self.agent_init,self.agent_final,self.skip)):
+        for i in tqdm(range(self.agent_init,self.agent_final+1,self.skip)):
             agentfile = os.path.join(self.data,self.type,str(i)+".json")
             with open(agentfile,"r") as file:
                 episodes = json.load(file)
@@ -90,13 +90,15 @@ class data_analysis():
         plt.title('Initial States')
         plt.show()
 
+    def plot_paths():
+
 
 
 if __name__=="__main__":
     with open("/data/sim/config.json","r") as file:
         config=json.load(file)
 
-    analysis = data_analysis('data/sim','/home/sebastian/Documents/3.2 fixed_1_q1_2_repeater_1000',1,30,output='all',type='episodes',skip=1)
+    analysis = data_analysis('data/sim','/home/sebastian/Documents/3.3 fixed_1_q1_2_repeater_300_radius_temporal',1,30,output='all',type='difficult',skip=1)
     analysis.extractdata()
     analysis.datacheck()
     analysis.extract_initial_states()

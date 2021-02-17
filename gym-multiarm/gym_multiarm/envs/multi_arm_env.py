@@ -154,7 +154,7 @@ class Multi_armEnv(gym.Env):
         else:
             reward = 0
         if dist_new < config["reward_radius"]:
-            reward = reward+config['reward_radius_reward']
+            reward = config['reward_radius_reward']
 
                 #calculate distance from line
         ##line slope:
