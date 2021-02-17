@@ -4,14 +4,14 @@ import os
 import json
 from tqdm.auto import tqdm
 
-top = '/home/sebastian/Documents/3.0 fixed_1_random_2_repeater/'
+top = '/home/sebastian/Documents/3.1 fixed_1_q1_2_repeater/'
 folder = os.path.join(top,'episodes')
 lossdata = os.path.join(top,'agent/data.csv')
 with open(os.path.join(top,'config.json'),"r") as file:
     config=json.load(file)
 
-agent = 269
-episode_number = 150
+agent = 1
+episode_number = 0
 percentile = config['PERCENTILE']
 num_steps = config['num_steps']
 

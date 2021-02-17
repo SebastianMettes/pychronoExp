@@ -76,7 +76,7 @@ if __name__=="__main__":
     with open("/data/sim/config.json","r") as file:
         config=json.load(file)
 
-    extractor(130,300,config,'/home/sebastian/Documents/3.0 fixed_1_random_2_repeater',skip=1,data='difficult')
+    extractor(130,300,config,'/home/sebastian/Documents/3.1 fixed_1_q1_2_repeater',skip=1,data='difficult')
 
 
 

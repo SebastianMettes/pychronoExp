@@ -39,7 +39,7 @@ class data_analysis():
         #extract useful information out of raw data
         #try:
         try:
-            extractor.extract_data(self.agent_init,self.agent_final,self.config,self.data,self.skip,data=self.type)
+            extractor.extract_data(self.agent_init,self.agent_final+1,self.config,self.data,self.skip,data=self.type)
         except Exception as e:
             print(e,"extractor-error")
             self.datacheck()
@@ -96,11 +96,11 @@ if __name__=="__main__":
     with open("/data/sim/config.json","r") as file:
         config=json.load(file)
 
-    analysis = data_analysis('data/sim','/home/sebastian/Documents/3.0 fixed_1_random_2_repeater',300,320,output='all',type='difficult',skip=1)
+    analysis = data_analysis('data/sim','/home/sebastian/Documents/3.2 fixed_1_q1_2_repeater_1000',1,30,output='all',type='episodes',skip=1)
     analysis.extractdata()
     analysis.datacheck()
     analysis.extract_initial_states()
-    analysis.plot_initial_states(lines=False)
+    analysis.plot_initial_states(lines=True)
 
         
 
