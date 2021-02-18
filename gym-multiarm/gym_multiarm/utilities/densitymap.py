@@ -90,7 +90,7 @@ class data_analysis():
         plt.title('Initial States')
         plt.show()
 
-    def plot_paths():
+    #def plot_paths():
 
 
 
@@ -98,7 +98,7 @@ if __name__=="__main__":
     with open("/data/sim/config.json","r") as file:
         config=json.load(file)
 
-    analysis = data_analysis('data/sim','/home/sebastian/Documents/3.3 fixed_1_q1_2_repeater_300_radius_temporal',1,30,output='all',type='difficult',skip=1)
+    analysis = data_analysis('data/sim','/home/sebastian/Documents/3.3 fixed_1_q1_2_repeater_300_radius_temporal',4,14,output='all',type='difficult',skip=1)
     analysis.extractdata()
     analysis.datacheck()
     analysis.extract_initial_states()
