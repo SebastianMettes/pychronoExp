@@ -63,31 +63,44 @@ class data_analysis():
                 self.target.append((targetx,targety))
                 self.arm_2.append((arm_2x,arm_2y))
 
-    def plot_initial_states(self, lines = True,size=0):
-        targetx = []
-        targety = []
-        arm_2x = []
-        arm_2y = []
+    def plot_initial_states(self, buckets, lines = True,size=0):
+
         
         if size == 0:
             size=len(self.target)
-        for i in np.random.choice(range(len(self.target)),size,replace=False): #note: insert a size=int to sample random size
-            targetx.append(self.target[i][0])
-            targety.append(self.target[i][1])
-            arm_2x.append(self.arm_2[i][0])
-            arm_2y.append(self.arm_2[i][1])
 
         fig,ax = plt.subplots()
-        plt.scatter(targetx,targety,label = 'target')
-        plt.scatter(arm_2x,arm_2y, label = 'arm_2 start')
-        if lines == True:
-            for i in range(len(arm_2x)):
-                plt.plot([targetx[i],arm_2x[i]],[targety[i],arm_2y[i]],'.-')
-        
-        plt.xlim(-2.2,2.2)
-        plt.ylim(-2.2,2.2)
-        plt.legend()
-        plt.title('Initial States')
+        #for i in np.random.choice(range(len(self.target)),size,replace=False): #note: insert a size=int to sample random size
+        for i in range(buckets):
+            targetx = []
+            targety = []
+            arm_2x = []
+            arm_2y = []      
+            print(i)      
+            for j in range(int(i*(len(self.target)/buckets)),int((i+1)*((len(self.target)/buckets)))-1):
+                print(j)
+                targetx.append(self.target[j][0])
+                targety.append(self.target[j][1])
+                arm_2x.append(self.arm_2[j][0])
+                arm_2y.append(self.arm_2[j][1])
+
+
+            plt.scatter(targetx,targety,label = 'target'+str(i))
+            plt.scatter(arm_2x,arm_2y, label = 'arm_2 start')
+            if buckets >1:
+                plt.title('From '+str(i*(100/buckets))+' to '+str((1+i)*(100/buckets)))
+            if lines == True:
+                for k in range(len(arm_2x)):
+                    plt.plot([targetx[k],arm_2x[k]],[targety[k],arm_2y[k]],'--',color='silver')
+            
+            plt.xlim(-2.2,2.2)
+            plt.ylim(-2.2,2.2)
+            plt.legend()
+            plt.subplots()
+
+
+
+        #plt.title('Initial States')
         plt.show()
 
     #def plot_paths():
@@ -98,11 +111,11 @@ if __name__=="__main__":
     with open("/data/sim/config.json","r") as file:
         config=json.load(file)
 
-    analysis = data_analysis('data/sim','/home/sebastian/Documents/3.3 fixed_1_q1_2_repeater_300_radius_temporal',4,14,output='all',type='difficult',skip=1)
-    analysis.extractdata()
+    analysis = data_analysis('data/sim','/home/sebastian/Documents/3.4 fixed_1_q1_2_repeater_300_radius',0,5,output='all',type='episodes',skip=1)
+    #analysis.extractdata()
     analysis.datacheck()
     analysis.extract_initial_states()
-    analysis.plot_initial_states(lines=True)
+    analysis.plot_initial_states(buckets=1,lines=False,)
 
         
 
