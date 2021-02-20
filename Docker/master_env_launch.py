@@ -27,7 +27,7 @@ sm = nn.Softmax(dim=1)
 data = []
 try:
     data = np.loadtxt(os.path.join(config['agent_path'],'data.csv'),delimiter = ',')
-    print(data)
+    #print(data)
 except Exception as e:
     print('could not load data.csv', e)
     with open(os.path.join(config['agent_path'],'data.csv'),'w') as file: 
@@ -39,6 +39,7 @@ except Exception as e:
 def update_optimizer(action_agent,config,agent_version):#determine most recent agent release folder 
     i = agent_version
     filepath,_,_,_=update_agent_filepath(config,i)
+    print(filepath)
     
     print('loaded agent',i)
     action_agent.net.load_model(os.path.join(filepath,'model.pt'))
@@ -111,18 +112,20 @@ agent_version = 1
 
 filepath,trialpath,agent_version,difficult_path = update_agent_filepath(config,agent_version)
 
+print("the current agent is", agent_version)
+
 #check if any newer agent_version exist:
-print(agent_version)
+
 if agent_version >1:
     agent_version,optimizer,action_agent = update_optimizer(action_agent,config,agent_version)
     filepath,trialpath,agent_version,difficult_path = update_agent_filepath(config,agent_version)
+    print(filepath,trialpath,difficult_path)
 if agent_version == 1:
     action_agent.net.save_model(filepath,optimizer)
 action_agent.cuda()
 
-print("I'm here now...")    
-print(filepath)
-print(agent_version)
+print("I'm here now...", filepath)    
+
 while True:
 #Continuously check for new json files with complete state tensors for each episode
     #create an array of filenames

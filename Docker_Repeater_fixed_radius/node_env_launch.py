@@ -153,7 +153,7 @@ while True:
 
     with open(cold_storage,"w") as file:        
         file.write(json.dumps(multi_state_tensor,indent=0)) 
-    print('saved data to cold storage')
+        print('saved data to cold storage')
     max_index = reward_list.index(max(reward_list))
     print(max_index,reward_list[max_index],len(reward_list),'index, value, length')
     state_tensor = multi_state_tensor[max_index]
