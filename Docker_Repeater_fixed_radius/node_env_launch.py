@@ -83,6 +83,9 @@ while True:
     bad_episodes = str(host_id)+'.'+date_time+".JSON"
     bad_episodes = os.path.join(config["difficult_dir"],str(agent_version),bad_episodes)
 
+    #Create cold starge data path:
+    cold_storage = os.path.join(config["cold_storage"],str(host_id)+'.'+date_time+'.JSON')
+
     #set the target from random coordinates:
     target_angle = (random.random()*2*math.pi)
     target_radius = random.random()*2*arm_length
@@ -125,7 +128,7 @@ while True:
             action_digit = action_agent.calc_action(agent_version,state_new) #use agent to determine action from current state and agent version
             action = convert_action(action_digit)
             state,state_new,action = environmentTest.forwardStep([action[0],action[1]]) #run simulation
-            reward = environmentTest.reward() #calculate reward
+            reward = environmentTest.reward(config) #calculate reward
             reward_total = reward+reward_total
             state_tensor.append((state,state_new,action_digit,reward)) #append information to state_tensor
 
@@ -148,8 +151,9 @@ while True:
                     file.write(json.dumps(state_tensor,indent=0)) #save state_tensor for agent optimization
                     print('saved difficult episode')
 
-        
-
+    with open(cold_storage,"w") as file:        
+        file.write(json.dumps(multi_state_tensor,indent=0)) 
+    print('saved data to cold storage')
     max_index = reward_list.index(max(reward_list))
     print(max_index,reward_list[max_index],len(reward_list),'index, value, length')
     state_tensor = multi_state_tensor[max_index]

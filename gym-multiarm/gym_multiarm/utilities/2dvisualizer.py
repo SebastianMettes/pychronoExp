@@ -4,14 +4,14 @@ import os
 import json
 from tqdm.auto import tqdm
 
-top = '/home/sebastian/Documents/3.0 fixed_1_random_2_repeater/'
+top = '/home/sebastian/Documents/3.4 fixed_1_q1_2_repeater_300_radius/'
 folder = os.path.join(top,'episodes')
 lossdata = os.path.join(top,'agent/data.csv')
 with open(os.path.join(top,'config.json'),"r") as file:
     config=json.load(file)
 
-agent = 269
-episode_number = 150
+agent = 102
+episode_number = 4
 percentile = config['PERCENTILE']
 num_steps = config['num_steps']
 
@@ -22,7 +22,7 @@ with open(filename,"r") as file:
     episodes =json.load(file) #save state_tensor for agent optimization
 
 rewards, _ = zip(*episodes)
-print(rewards)
+#print(rewards)
 #reward_cutoff = np.percentile(rewards,percentile,overwrite_input=True)
 #episodes = list(filter(lambda x: x[0] >= reward_cutoff,episodes))
 #episodes = sorted(episodes,key=lambda x: x[0])
