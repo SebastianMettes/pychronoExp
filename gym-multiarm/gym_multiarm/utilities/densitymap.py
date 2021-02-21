@@ -6,13 +6,13 @@ from tqdm.auto import tqdm
 from gym_multiarm.utilities.extractor import extractor
 
 class data_analysis():
-    def __init__(self,experiment_dir,data_storage,agent_init,agent_final,output = 'all',type = 'episodes',skip=1):
+    def __init__(self,experiment_dir,data_storage,agent_init,agent_final,output = 'all',etype = 'episodes',skip=1):
         self.experiment = experiment_dir
         self.data = data_storage
         self.agent_init = agent_init
         self.agent_final = agent_final
         self.output = output
-        self.type = type
+        self.etype = etype
         self.skip = skip
         with open(os.path.join(self.data,'config.json')) as file:
             self.config = json.load(file)
@@ -21,7 +21,7 @@ class data_analysis():
     def datacheck(self):
         for i in range(self.agent_init,self.agent_final):
             #check that all expected files exist:
-            if os.path.isfile(os.path.join(self.data,self.type,str(i)+'.json')):
+            if os.path.isfile(os.path.join(self.data,self.etype,str(i)+'.json')):
                 continue
             else:
                 if i == self.agent_init:
@@ -39,7 +39,7 @@ class data_analysis():
         #extract useful information out of raw data
         #try:
         try:
-            extractor.extract_data(self.agent_init,self.agent_final+1,self.config,self.data,self.skip,data=self.type)
+            extractor.extract_data(self.agent_init,self.agent_final+1,self.config,self.data,self.skip,data=self.etype)
         except Exception as e:
             print(e,"extractor-error")
             self.datacheck()
@@ -51,8 +51,9 @@ class data_analysis():
         self.target = []
         #self.arm_1 = []#irrelevant when arm 1 always has the same starting conditions
         self.arm_2 = []
+        self.rewards = []
         for i in tqdm(range(self.agent_init,self.agent_final+1,self.skip)):
-            agentfile = os.path.join(self.data,self.type,str(i)+".json")
+            agentfile = os.path.join(self.data,self.etype,str(i)+".json")
             with open(agentfile,"r") as file:
                 episodes = json.load(file)
             for i in range(len(episodes)):
@@ -62,8 +63,21 @@ class data_analysis():
                 arm_2y = episodes[i][1][0][3]
                 self.target.append((targetx,targety))
                 self.arm_2.append((arm_2x,arm_2y))
+                self.rewards.append((episodes[i][0]))
+                
+        biglist = zip(self.rewards,self.arm_2,self.target)
+        biglist = sorted(biglist,key = lambda x: x[0])
+        self.rewards,self.arm_2,self.target = zip(*biglist)
 
-    def plot_initial_states(self, buckets, lines = True,size=0):
+            
+        #sort the list by episode reward:
+
+        
+
+
+        #rearrange increasing rewards order:
+
+    def plot_initial_states(self, buckets, label, lines = True,size=0,):
 
         
         if size == 0:
@@ -75,7 +89,8 @@ class data_analysis():
             targetx = []
             targety = []
             arm_2x = []
-            arm_2y = []      
+            arm_2y = []
+            reward = []      
             print(i)      
             for j in range(int(i*(len(self.target)/buckets)),int((i+1)*((len(self.target)/buckets)))-1):
                 print(j)
@@ -83,12 +98,12 @@ class data_analysis():
                 targety.append(self.target[j][1])
                 arm_2x.append(self.arm_2[j][0])
                 arm_2y.append(self.arm_2[j][1])
+                reward.append(self.rewards[j])
 
-
+            reward_avg = np.average(reward)
             plt.scatter(targetx,targety,label = 'target'+str(i))
             plt.scatter(arm_2x,arm_2y, label = 'arm_2 start')
-            if buckets >1:
-                plt.title('From '+str(i*(100/buckets))+' to '+str((1+i)*(100/buckets)))
+            plt.title(self.etype+' episodes From '+str(i*(100/buckets))+' to '+str((1+i)*(100/buckets))+' Trial '+label+' agents '+str(self.agent_init) +' to '+str(self.agent_final)+' reward '+str(reward_avg))
             if lines == True:
                 for k in range(len(arm_2x)):
                     plt.plot([targetx[k],arm_2x[k]],[targety[k],arm_2y[k]],'--',color='silver')
@@ -103,7 +118,46 @@ class data_analysis():
         #plt.title('Initial States')
         plt.show()
 
-    #def plot_paths():
+    def reward_histogram(self,agent_list):
+        def CDF(data):
+            return np.sort(data), np.linspace(0,1,len(data),endpoint=False)
+
+        for i in range(len(agent_list)):
+            historewardlist = []
+            steps = []
+            j=0
+            agentfile = os.path.join(self.data,self.etype,str(agent_list[i])+".json")
+            with open(agentfile,"r") as file:
+                episodes = json.load(file)
+                for k in range(len(episodes)):
+                    historewardlist.append(episodes[k][0])
+                    steps.append(j)
+                    j=j+1
+
+
+            plt.plot(*CDF(historewardlist),label = 'rewards agent '+str(agent_list[i]))
+            #plt.plot(steps,historewardlist, label = 'rewards agent '+str(agent_list[i]))
+            #plt.legend()
+        plt.title('CDF - agent rewards '+str(agent_list[0])+' through '+str(agent_list[len(agent_list)-1]))
+        plt.xlabel('Reward')
+        plt.ylabel("Density")
+        plt.show()
+
+    def path_plot(self,agent_list,episode_list):
+        for i in range(len(agent_list)):
+            with open(os.path.join(self.data,))
+            
+            for j in range(len(episode_list)):
+                #extract x,y data from arm 1:
+                arm1 = []
+                for k in range(config['num_steps']):
+                    posX = 
+
+
+
+        pass
+
+        
 
 
 
@@ -111,11 +165,12 @@ if __name__=="__main__":
     with open("/data/sim/config.json","r") as file:
         config=json.load(file)
 
-    analysis = data_analysis('data/sim','/home/sebastian/Documents/3.4 fixed_1_q1_2_repeater_300_radius',0,5,output='all',type='episodes',skip=1)
+    analysis = data_analysis('data/sim','/home/sebastian/Documents/3.4 fixed_1_q1_2_repeater_300_radius',307,400,output='all',etype='episodes',skip=1)
+    
     #analysis.extractdata()
     analysis.datacheck()
     analysis.extract_initial_states()
-    analysis.plot_initial_states(buckets=1,lines=False,)
-
+    analysis.plot_initial_states(buckets=5,label='3.4',lines=False)
+    #analysis.reward_histogram([10,20,30,40,50,60,70,80,90,100,125,150,175,200,225,250,275,300,330,336])
         
 

@@ -119,7 +119,7 @@ while True:
         action_digit = action_agent.calc_action(agent_version,state_new) #use agent to determine action from current state and agent version
         action = convert_action(action_digit)
         state,state_new,action = environmentTest.forwardStep([action[0],action[1]]) #run simulation
-        reward = environmentTest.reward() #calculate reward
+        reward = environmentTest.reward(config) #calculate reward
         state_tensor.append((state,state_new,action_digit,reward)) #append information to state_tensor
         if environmentTest.headless ==False:
             environmentTest.render()
