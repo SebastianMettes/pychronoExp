@@ -135,42 +135,96 @@ class data_analysis():
                     j=j+1
 
 
-            plt.plot(*CDF(historewardlist),label = 'rewards agent '+str(agent_list[i]))
+            plt.plot(*CDF(historewardlist),label = 'rewards agent '+str(agent_list[i]),)
             #plt.plot(steps,historewardlist, label = 'rewards agent '+str(agent_list[i]))
             #plt.legend()
         plt.title('CDF - agent rewards '+str(agent_list[0])+' through '+str(agent_list[len(agent_list)-1]))
+        plt.legend()
         plt.xlabel('Reward')
         plt.ylabel("Density")
         plt.show()
 
     def path_plot(self,agent_list,episode_list):
         for i in range(len(agent_list)):
-            with open(os.path.join(self.data,))
-            
+            fig,ax=plt.subplots()
+            plt.xlim(-2.2,2.2)
+            plt.ylim(-2.2,2.2)
+            with open(os.path.join(self.data,self.etype,str(agent_list[i])+'.json')) as file:
+                episodes = json.load(file)
+                rewards, _ = zip(*episodes)
             for j in range(len(episode_list)):
                 #extract x,y data from arm 1:
                 arm1 = []
-                for k in range(config['num_steps']):
-                    posX = 
+                arm2 = []
+                action = []
+                for k in range(self.config['num_steps']):
+                    posX = episodes[episode_list[j]][1][k][2]
+                    posY = episodes[episode_list[j]][1][k][3]
+                    arm1.append((posX,posY))
+
+                #extract x,y data from arm 2:
+                for k in range(self.config['num_steps']):
+                    posX = episodes[episode_list[j]][1][k][0]
+                    posY = episodes[episode_list[j]][1][k][1]
+                    arm2.append((posX,posY))
+                
+                #extract x,y data from arm 2:
+                for k in range(self.config['num_steps']):
+                    action0 = episodes[episode_list[j]][1][k][6]
+                    action1 = episodes[episode_list[j]][1][k][7]
+                    action.append((posX,posY))
+
+                targetx = episodes[episode_list[j]][int(1)][int(0)][int(4)]
+                targety = episodes[episode_list[j]][int(1)][int(0)][int(5)]
+
+                xcoords,ycoords = zip(*arm1)
+                plt.plot(xcoords,ycoords,label='epi '+str(episode_list[j])+' r '+"{:.2f}".format(rewards[episode_list[j]]))
+                #xcoords,ycoords = zip(*arm2)
+                #plt.plot(xcoords,ycoords)
+                try:
+                    circle1 = plt.Circle((targetx, targety), self.config['reward_radius'], color='r')
+                except:
+                    circle1 = plt.Circle((targetx, targety), 0.05, color='r')
+                circle2 = plt.Circle((arm1[0][0],arm1[0][1]),0.05,color='g')
+                ax.add_patch(circle1)
+                ax.add_patch(circle2)
+                plt.legend()
+                plt.title('paths of agent #'+str(agent_list[i]))
+                plt.xlabel
+            plt.show()
+
+        
 
 
 
         pass
 
-        
+
+    def loss_plot(self):
+
+        lossdata = os.path.join(os.path.join(self.data,'data.csv'))
+        csvf = np.loadtxt(lossdata,delimiter = ',')
+        Aversion,avgReward,loss = zip(*csvf)
+        plt.plot(Aversion,avgReward)
+        plt.title("Reward")
+        plt.subplots()
+        plt.title('Loss')
+        plt.plot(Aversion,loss)
+        plt.show()
 
 
 
 if __name__=="__main__":
-    with open("/data/sim/config.json","r") as file:
-        config=json.load(file)
+    #with open("/data/sim/config.json","r") as file:
+    #    config=json.load(file)
 
-    analysis = data_analysis('data/sim','/home/sebastian/Documents/3.4 fixed_1_q1_2_repeater_300_radius',307,400,output='all',etype='episodes',skip=1)
+    analysis = data_analysis('data/sim','/home/sebastian/Documents/3.0 fixed_1_random_2_repeater',1195,3000,output='all',etype='episodes',skip=3)
     
     #analysis.extractdata()
-    analysis.datacheck()
-    analysis.extract_initial_states()
-    analysis.plot_initial_states(buckets=5,label='3.4',lines=False)
-    #analysis.reward_histogram([10,20,30,40,50,60,70,80,90,100,125,150,175,200,225,250,275,300,330,336])
-        
+    #analysis.datacheck()
+    #analysis.extract_initial_states()
+    #analysis.plot_initial_states(buckets=5,label='2.0',lines=False)
+    #analysis.reward_histogram([1,100,300,500,700,900,1100,1195,1399])
+    #analysis.path_plot([308],[0,50,100,150,200,250,300]) 
+    analysis.loss_plot()   
 

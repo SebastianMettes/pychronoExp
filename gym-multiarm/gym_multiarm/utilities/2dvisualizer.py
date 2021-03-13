@@ -10,8 +10,8 @@ lossdata = os.path.join(top,'agent/data.csv')
 with open(os.path.join(top,'config.json'),"r") as file:
     config=json.load(file)
 
-agent = 1
-episode_number = 320
+agent = 301
+episode_number = 90
 percentile = config['PERCENTILE']
 num_steps = config['num_steps']
 

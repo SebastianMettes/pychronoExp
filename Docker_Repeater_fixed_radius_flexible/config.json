@@ -1,0 +1,43 @@
+{
+    "dimensions":
+    {
+        "arm_length":1.1,
+        "arm_width":0.02,
+        "arm_height":0.0125
+    },
+    "num_steps":250,
+    "step_size":0.004,
+    "max_torque":1,    
+    "materials":
+    {
+        "steel":
+        {
+        "E":2.15E9,
+        "poisson":0.5,
+        "density":8050
+        },
+        "pla":
+        {
+            "E":2.3E9,
+            "poisson":0.5,
+            "density":1050
+        }
+    },
+    "pychrono_dir":"/pychronoExp",
+    "save_dir":"/data/sim/trial",
+    "agent_path":"/data/sim/agent",
+    "difficult_dir":"/data/sim/difficult",
+    "HIDDEN_SIZE":128,
+    "OBSERVE_SIZE":20,
+    "N_ACTIONS":9,
+    "BATCH_SIZE":300,
+    "PERCENTILE":0,
+    "learning_rate":0.001,
+    "gpu_batch_size":300,
+    "num_repeat_episodes":15,
+    "reward_radius":0.05,
+    "reward_radius_reward":0.01,
+    "cold_storage":"/data/cold/250-steps_0.004-stepsize_1Nm"
+    
+
+}
