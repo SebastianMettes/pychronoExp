@@ -11,7 +11,7 @@ from tqdm.auto import tqdm
 
 
 ##Load config file:
-with open("/home/sebastian/Documents/Autoencoder_1/config.json","r") as file:
+with open("/data/cold/config.json","r") as file:
     config = json.load(file)
     cold_data = config["cold_storage"]
     datapath = config["data_storage"]
