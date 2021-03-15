@@ -37,7 +37,7 @@
     "num_repeat_episodes":15,
     "reward_radius":0.05,
     "reward_radius_reward":0.01,
-    "cold_storage":"/data/cold/250-steps_0.004-stepsize_1Nm"
+    "cold_storage":"/data/cold/250-steps_0.004-stepsize_1Nm_flexible"
     
 
 }

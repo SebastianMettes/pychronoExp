@@ -42,7 +42,7 @@ environmentTest.reset(False,True,config['dimensions']['arm_width'],config['dimen
 action_agent = agent(config)
 
 #Modules:
-def convert_action(action): #convert 0-7 to [motorA,motorB]
+def convert_action(action): #convert 0-8 to [motorA,motorB]
     if action == 0:
         action = [0,0]
     elif action == 1:
