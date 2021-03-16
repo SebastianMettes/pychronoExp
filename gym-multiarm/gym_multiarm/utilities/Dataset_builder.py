@@ -29,7 +29,7 @@ for i in tqdm(range(len(file_list))):
         with env.begin(write=True) as txn:
             for j in range(len(data)):
                 for k in (range(len(data[j]))):
-                    key = str(i)+str(j)+str(k)
+                    key = str(i)+str('.')+str(j)+str('.')+str(k)
 
                     
                     def truncate(ldata):

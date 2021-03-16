@@ -218,13 +218,13 @@ if __name__=="__main__":
     #with open("/data/sim/config.json","r") as file:
     #    config=json.load(file)
 
-    analysis = data_analysis('data/sim','/home/sebastian/Documents/4.1 Flexible_1',7,150,output='all',etype='difficult',skip=1)
+    analysis = data_analysis('data/sim','/home/sebastian/Documents/5.0 Flexible',1,206,output='all',etype='episodes',skip=3)
     
-    analysis.extractdata()
+    #analysis.extractdata()
     #analysis.datacheck()
     #analysis.extract_initial_states()
     #analysis.plot_initial_states(buckets=5,label='2.0',lines=False)
-    #analysis.reward_histogram([1,10,20,30,40,50,60,70,80,90,100,110,120,130,135])
+    analysis.reward_histogram([1,13,61,91,151,205])
     #analysis.path_plot([308],[0,50,100,150,200,250,300]) 
     #analysis.loss_plot()   
 
