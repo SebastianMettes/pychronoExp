@@ -1,0 +1,14 @@
+#!/bin/bash
+
+#SBATCH -p sys_all
+#SBATCH -w sys-gpu1
+#SBATCH --ntasks=1
+#SBATCH --nodes=1
+#SBATCH --output=output.txt
+
+#SBATCH --gres=gpu:1
+
+#sits there and spins its wheels. Uses the GPU for a second.
+python master_env_launch.py
+
+#python node_env_launch.py
