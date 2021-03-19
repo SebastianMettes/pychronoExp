@@ -218,7 +218,7 @@ if __name__=="__main__":
     #with open("/data/sim/config.json","r") as file:
     #    config=json.load(file)
 
-    analysis = data_analysis('data/sim','/home/sebastian/Documents/5.2 Flexible',1,400,output='all',etype='episodes',skip=3)
+    analysis = data_analysis('data/sim','/home/sebastian/Documents/5.33 Flexible',1,400,output='all',etype='episodes',skip=5)
     
     analysis.extractdata()
     #analysis.datacheck()
