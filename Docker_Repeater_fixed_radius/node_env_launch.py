@@ -66,6 +66,11 @@ def convert_action(action): #convert 0-7 to [motorA,motorB]
     return(action)
     
 while True:
+    steelprop = config['materials']['steel']
+    steel = env.Multi_armMaterial('steel',steelprop['E'],steelprop['poisson'],steelprop['density'])
+    plaprop = config['materials']['pla']
+    pla = env.Multi_armMaterial('pla',plaprop['E'],plaprop['poisson'],plaprop['density'])
+    print(pla.modulus)
 
     #get the time as part of the unique output data file.
     now = datetime.now()
