@@ -6,6 +6,7 @@ import os
 import os.path
 import json
 from gym_multiarm.agent.nodeAgent import agent
+from gym_multiarm.envs import multi_arm_env as env
 import time
 import numpy as np
 
@@ -127,6 +128,13 @@ action_agent.cuda()
 print("I'm here now...", filepath)    
 
 while True:
+
+#Load in the config file, save the material property values.
+    with open("/data/sim/config.json","r") as file:
+        config=json.load(file)
+    plaprop = config['materials']['pla']
+    pla = env.Multi_armMaterial('pla',plaprop['E'],plaprop['poisson'],plaprop['density'])
+
 #Continuously check for new json files with complete state tensors for each episode
     #create an array of filenames
     file_list = [name for name in os.listdir(trialpath) if os.path.isfile(os.path.join(trialpath,name))]
@@ -185,7 +193,7 @@ while True:
     loss_mean = np.mean(loss_store)
 
     data = list(data)
-    data.append((agent_version,mean,loss_mean))
+    data.append((agent_version,mean,loss_mean,pla.modulus))
     print(agent_version,mean, loss_mean)
     data_array = np.array(data)
     np.savetxt(os.path.join(config['agent_path'],'data.csv'), data_array, delimiter=",")

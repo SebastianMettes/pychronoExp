@@ -66,6 +66,8 @@ def convert_action(action): #convert 0-7 to [motorA,motorB]
     return(action)
     
 while True:
+    with open("/data/sim/config.json","r") as file:
+        config=json.load(file)
     steelprop = config['materials']['steel']
     steel = env.Multi_armMaterial('steel',steelprop['E'],steelprop['poisson'],steelprop['density'])
     plaprop = config['materials']['pla']
