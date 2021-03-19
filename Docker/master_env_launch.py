@@ -193,7 +193,7 @@ while True:
     loss_mean = np.mean(loss_store)
 
     data = list(data)
-    data.append((agent_version,mean,loss_mean,float(pla.modulus)))
+    data.append((agent_version,mean,loss_mean))
     print(agent_version,mean, loss_mean)
     data_array = np.array(data)
     np.savetxt(os.path.join(config['agent_path'],'data.csv'), data_array, delimiter=",")
