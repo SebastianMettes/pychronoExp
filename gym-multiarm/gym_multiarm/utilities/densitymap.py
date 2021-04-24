@@ -4,6 +4,9 @@ import os
 import json
 from tqdm.auto import tqdm
 from gym_multiarm.utilities.extractor import extractor
+import math
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import r2_score
 
 class data_analysis():
     def __init__(self,experiment_dir,data_storage,agent_init,agent_final,output = 'all',etype = 'episodes',skip=1):
@@ -52,6 +55,8 @@ class data_analysis():
         #self.arm_1 = []#irrelevant when arm 1 always has the same starting conditions
         self.arm_2 = []
         self.rewards = []
+        self.distance = []
+        self.distance_zero = []
         for i in tqdm(range(self.agent_init,self.agent_final+1,self.skip)):
             agentfile = os.path.join(self.data,self.etype,str(i)+".json")
             with open(agentfile,"r") as file:
@@ -64,10 +69,15 @@ class data_analysis():
                 self.target.append((targetx,targety))
                 self.arm_2.append((arm_2x,arm_2y))
                 self.rewards.append((episodes[i][0]))
+                distance = math.sqrt((targetx-arm_2x)**2+(targety-arm_2y)**2)
+                distance_z = math.sqrt((targetx-1.1)**2+(targety)**2)
+                self.distance.append(distance)
+                self.distance_zero.append(distance_z)
                 
         biglist = zip(self.rewards,self.arm_2,self.target)
         biglist = sorted(biglist,key = lambda x: x[0])
         self.rewards,self.arm_2,self.target = zip(*biglist)
+        
 
             
         #sort the list by episode reward:
@@ -101,9 +111,9 @@ class data_analysis():
                 reward.append(self.rewards[j])
 
             reward_avg = np.average(reward)
-            plt.scatter(targetx,targety,label = 'target'+str(i))
-            plt.scatter(arm_2x,arm_2y, label = 'arm_2 start')
-            plt.title(self.etype+' episodes From '+str(i*(100/buckets))+' to '+str((1+i)*(100/buckets))+' Trial '+label+' agents '+str(self.agent_init) +' to '+str(self.agent_final)+' reward '+str(reward_avg))
+            plt.scatter(targetx,targety,label = 'target')
+            plt.scatter(arm_2x,arm_2y, label = 'end_effector init. pos.')
+            plt.title(str(i*(100/buckets))+'th'+' to '+str((1+i)*(100/buckets))+'th percentile' + ' avg. reward '+str(reward_avg))
             if lines == True:
                 for k in range(len(arm_2x)):
                     plt.plot([targetx[k],arm_2x[k]],[targety[k],arm_2y[k]],'--',color='silver')
@@ -200,16 +210,54 @@ class data_analysis():
         pass
 
 
-    def loss_plot(self):
+    def loss_plot(self,vertical = False):
 
         lossdata = os.path.join(os.path.join(self.data,'data.csv'))
         csvf = np.loadtxt(lossdata,delimiter = ',')
         Aversion,avgReward,loss = zip(*csvf)
         plt.plot(Aversion,avgReward)
         plt.title("Reward")
+        if vertical == True:
+            lines = [232,240,251,270,406,508,648,691,744,765,774,845,981,996,1125,1153,1173,1257,1392,1434,1498,1618]
+            for i in range(len(lines)):
+                plt.axvline(x = lines[i], ymin = 0,c='r')
         plt.subplots()
         plt.title('Loss')
         plt.plot(Aversion,loss)
+        if vertical == True:
+            lines = [232,240,251,270,406,508,648,691,744,765,774,845,981,996,1125,1153,1173,1257,1392,1434,1498,1618]
+            for i in range(len(lines)):
+                plt.axvline(x = lines[i], ymin = 0,c='r')
+        plt.show()
+
+    def distance_plot(self):
+        model = LinearRegression()
+        model.fit(np.array(self.distance)[:,np.newaxis],self.rewards)
+        print(model.coef_)
+        print(model.intercept_)
+
+        plt.scatter(self.distance,self.rewards)
+        axes = plt.gca()
+        x_vals = np.array(axes.get_xlim())
+        y_vals_pred = model.intercept_+model.coef_*(x_vals)
+        r2 = r2_score(self.rewards,model.intercept_+model.coef_*(self.distance))
+        plt.plot(x_vals,y_vals_pred,'--')
+        plt.title("Distance to Target vs. Total Reward, linear fit r^2 =  "+str(round(r2,3)))
+        plt.show()
+
+    def distance_zero_plot(self):
+        model = LinearRegression()
+        model.fit(np.array(self.distance_zero)[:,np.newaxis],self.rewards)
+        print(model.coef_)
+        print(model.intercept_)
+
+        plt.scatter(self.distance_zero,self.rewards)
+        axes = plt.gca()
+        x_vals = np.array(axes.get_xlim())
+        y_vals_pred = model.intercept_+model.coef_*(x_vals)
+        r2 = r2_score(self.rewards,model.intercept_+model.coef_*(self.distance_zero))
+        plt.plot(x_vals,y_vals_pred,'--')
+        plt.title("Distance to Target vs. Total Reward, linear fit r^2 =  "+str(round(r2,3)))
         plt.show()
 
 
@@ -218,13 +266,15 @@ if __name__=="__main__":
     #with open("/data/sim/config.json","r") as file:
     #    config=json.load(file)
 
-    analysis = data_analysis('data/sim','/home/sebastian/Documents/5.33 Flexible',1,400,output='all',etype='episodes',skip=5)
+    analysis = data_analysis('data/sim','/home/sebastian/Documents/5.4 Flexible',1650,1656,output='all',etype='episodes',skip=1)
     
-    analysis.extractdata()
-    #analysis.datacheck()
-    #analysis.extract_initial_states()
-    #analysis.plot_initial_states(buckets=5,label='2.0',lines=False)
-    #analysis.reward_histogram([1,13,61,91,151,205,235,289,292])
-    #analysis.path_plot([308],[0,50,100,150,200,250,300]) 
-    #analysis.loss_plot()   
+    #analysis.extractdata()
+    analysis.datacheck()
+    analysis.extract_initial_states()
+    analysis.plot_initial_states(buckets=5,label = '',lines=False)
+    #analysis.distance_plot()
+    #analysis.distance_zero_plot()
+    #analysis.reward_histogram([250,647,773,1124,1391,1617,1710])
+    #analysis.path_plot([1710],[0,50,100,150,200,250,300]) 
+    #analysis.loss_plot(vertical=True)   
 

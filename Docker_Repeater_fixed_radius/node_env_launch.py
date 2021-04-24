@@ -9,6 +9,7 @@ import numpy as np
 import json
 import os
 import uuid
+import time
 #notes:
 '''
 To launch the agent,the config file must include all environment and agent parameters.
@@ -112,14 +113,14 @@ while True:
 
     position2 = (position1[0]+position2[0],0,position1[2]+position2[2])
     reward_list = []
-    j = 0
+    j = 0 
     k=0
     multi_state_tensor = []
     while j<repetitions:
     #reset the environment to starting state
         print("environment Reset, attempt #",j+1)
         state_tensor = []
-        environmentTest.reset(False,True,config['dimensions']['arm_width'],config['dimensions']['arm_height'],position1,position2,pla,config['step_size'],config['max_torque'],target)
+        environmentTest.reset(False,False,config['dimensions']['arm_width'],config['dimensions']['arm_height'],position1,position2,pla,config['step_size'],config['max_torque'],target)
    
 
 
