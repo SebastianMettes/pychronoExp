@@ -26,7 +26,7 @@ copy your config.json file into /data/sim/config.json
 note: you can obtain a template of config.json under /pychronoexp/Docker
 
 1) build the network container and the fea container:
---navigate to /pychronoexp/Docker
+--navigate to /pychronoexp/Docker_(version)
 --run: sudo docker build -t pychrono-fea:latest .
 --navigate to /pychronoexp/Docker_Host
 --run sudo docker build -t pychrono-net:latest .
@@ -39,3 +39,4 @@ note: you can obtain a template of config.json under /pychronoexp/Docker
 Everything should be running
 note, these docker images are avaialble via dockerhub under sebastianmettes/pychrono-net and sebastianmettes/pychrono-fea
 note, you will create ALOT of data, 100's of gigabytes. You can extract the data using the tools under /pychronoexp/gym-multiarm/gym_multiarm/utilities
+note, older CPU's (lacking AVX2 support) will not run PyChrono (FEA sim) properly.
