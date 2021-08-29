@@ -139,7 +139,7 @@ while True:
             reward = environmentTest.reward(config) #calculate reward
             reward_total = reward+reward_total
             state_tensor.append((state,state_new,action_digit,reward)) #append information to state_tensor
-
+            time.sleep(0.005)
             if environmentTest.headless ==False:
                 environmentTest.render()
         

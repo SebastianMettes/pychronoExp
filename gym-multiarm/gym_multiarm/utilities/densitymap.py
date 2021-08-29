@@ -145,7 +145,7 @@ class data_analysis():
                     j=j+1
 
 
-            plt.plot(*CDF(historewardlist),label = 'rewards agent '+str(agent_list[i]),)
+            plt.plot(*CDF(historewardlist),label = 'agent '+str(agent_list[i]),)
             #plt.plot(steps,historewardlist, label = 'rewards agent '+str(agent_list[i]))
             #plt.legend()
         plt.title('CDF - agent rewards '+str(agent_list[0])+' through '+str(agent_list[len(agent_list)-1]))
@@ -199,8 +199,9 @@ class data_analysis():
                 ax.add_patch(circle1)
                 ax.add_patch(circle2)
                 plt.legend()
-                plt.title('paths of agent #'+str(agent_list[i]))
-                plt.xlabel
+                #plt.title('paths of agent #'+str(agent_list[i]))
+                plt.xlabel('meters')
+                plt.ylabel('meters')
             plt.show()
 
         
@@ -210,25 +211,47 @@ class data_analysis():
         pass
 
 
-    def loss_plot(self,vertical = False):
+    def loss_plot(self,vertical = False, modulus=False):
 
         lossdata = os.path.join(os.path.join(self.data,'data.csv'))
         csvf = np.loadtxt(lossdata,delimiter = ',')
         Aversion,avgReward,loss = zip(*csvf)
-        plt.plot(Aversion,avgReward)
-        plt.title("Reward")
-        if vertical == True:
-            lines = [232,240,251,270,406,508,648,691,744,765,774,845,981,996,1125,1153,1173,1257,1392,1434,1498,1618]
-            for i in range(len(lines)):
-                plt.axvline(x = lines[i], ymin = 0,c='r')
-        plt.subplots()
-        plt.title('Loss')
-        plt.plot(Aversion,loss)
-        if vertical == True:
-            lines = [232,240,251,270,406,508,648,691,744,765,774,845,981,996,1125,1153,1173,1257,1392,1434,1498,1618]
-            for i in range(len(lines)):
-                plt.axvline(x = lines[i], ymin = 0,c='r')
+        Aversion = []
+
+        modulus_changepoints = [0,296,343,528,232+460,240+460,251+460,270+520,406+520,508+520,648+520,691+520,744+520,765+520,774+520,845+520,981+520,996+520,1125+520,1153+520,1173+520,1257+520,1392+520,1434+520,1498+520,1618+520]
+        modulus_values = [230,115,57.5,50,40,35,30,20,10,7.5,7.0,6.5,6,5.5,5.0,4.5,4.1,3.7,3.4,3.1,2.8,2.6,2.4,2.2,2.0,1.8]
+
+        for i in range(len(avgReward)):
+            Aversion.append(i)
+
+        fig, ax1 = plt.subplots()
+        #plt.title('Reward, Modulus of Elasticity Change')
+        ax1.set_xlabel('Agent #')
+        ax1.set_ylabel('Reward')
+        ax1.plot(Aversion, avgReward)
+        if modulus == True:
+            ax2 = ax1.twinx()
+            ax2.set_ylabel('Modulus of Elasticity, GPa',color = 'tab:red')
+            ax2.step(modulus_changepoints,modulus_values, 'r')
+            ax2.tick_params(axis='y',labelcolor = 'tab:red')
+
+        fig.tight_layout()
         plt.show()
+
+        plt.plot(Aversion,avgReward)
+        #plt.title("Reward")
+        
+
+        plt.xlabel('Agent #')
+        plt.ylabel('Reward')
+        plt.subplots()
+        #plt.title('Loss')
+        plt.plot(Aversion,loss)
+        plt.xlabel('Agent #')
+        plt.ylabel('Loss')
+
+        plt.show()
+        
 
     def distance_plot(self):
         model = LinearRegression()
@@ -266,15 +289,16 @@ if __name__=="__main__":
     #with open("/data/sim/config.json","r") as file:
     #    config=json.load(file)
 
-    analysis = data_analysis('data/sim','/home/sebastian/Documents/5.4 Flexible',1650,1656,output='all',etype='episodes',skip=1)
+    analysis = data_analysis('data/sim','/home/sebastian/Documents/5.4 analysis',0,2500,output='all',etype='episodes',skip=1)
     
     #analysis.extractdata()
     analysis.datacheck()
-    analysis.extract_initial_states()
-    analysis.plot_initial_states(buckets=5,label = '',lines=False)
+    #analysis.extract_initial_states()
+    #analysis.plot_initial_states(buckets=5,label = '',lines=False)
     #analysis.distance_plot()
     #analysis.distance_zero_plot()
     #analysis.reward_histogram([250,647,773,1124,1391,1617,1710])
-    #analysis.path_plot([1710],[0,50,100,150,200,250,300]) 
-    #analysis.loss_plot(vertical=True)   
+    #analysis.reward_histogram([1,100,300,500,700,900,1100,1195])
+    #analysis.path_plot([1653],[0,50,100,150,200,250,300]) 
+    analysis.loss_plot(vertical=False, modulus=True)   
 
